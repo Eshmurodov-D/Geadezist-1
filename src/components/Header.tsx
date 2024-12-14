@@ -14,8 +14,8 @@ const Header: React.FC = () => {
 <div className="flex items-center gap-4 mr-5">
     
     <div className="text-center font-medium dark:text-white">
-        <div>{user?.name || "Guest"}</div>
-        <div className="text-sm text-gray-500 dark:text-gray-400">{user?.role}</div>
+        <h1 className="text-sm text-black ">{user?.name || "Guest"}</h1>
+        <div className="text-sm text-gray-500 ">{user?.role}</div>
     </div>
     <img className="w-10 h-10 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="logo"/>
 </div>
