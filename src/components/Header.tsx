@@ -1,41 +1,43 @@
+// Header.tsx
 import React from "react";
-import useAuthStore from "../store/useAuthStore";
-import Sidebar from "./Sidebar";
+// import Dropdown, { DropdownOption } from "./DropDown/Dropdown";
+import { useNavigate } from "react-router-dom";
 import Dropdown, { DropdownOption } from "./DropDown/DropDown";
 
 const Header: React.FC = () => {
-  const { user } = useAuthStore();
+  const navigate = useNavigate();
+
   const options: DropdownOption[] = [
     {
-      type: 'button',
-      label: 'logout',
+      label: "Profile",
+      type: "text",
+      onClick: () => console.log("Navigating to Profile..."),
     },
     {
-      label: 'amirbk@gmail.ocm',
+      label: "Settings",
+      type: "button",
+      onClick: () => {
+        console.log("Navigating to settings...");
+        navigate("/settings");
+      },
     },
     {
-      label: 'Amr',
-    },
-    {
-      label: 'Amr',
+      label: "Logout",
+      type: "button",
+      onClick: () => {
+        console.log("Logging out...");
+        navigate("/login");
+      },
     },
   ];
 
   return (
-    <header className="bg-white text-slate-950 p-4 flex justify-between items-center">
-      <h1 className="text-xl font-bold hidden lg:block">Geadezist Admin</h1>
-      <div className="lg:hidden">
-        <Sidebar />
-      </div>
-
-      <div className="flex items-center gap-4 mr-5">
-
-        <div className="text-center font-medium dark:text-white">
-          <div>{user?.name || "Guest"}</div>
-          <div className="text-sm text-gray-500 dark:text-gray-400">{user?.role}</div>
-        </div>
-        <Dropdown trigger={<img className="w-10 h-10 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="logo" />} options={options} />      </div>
-  </header>
+    <header className="ml-[300px]">
+      <Dropdown
+        trigger={<button className="p-2 bg-blue-500 text-white rounded">Open Menu</button>}
+        options={options}
+      />
+    </header>
   );
 };
 
