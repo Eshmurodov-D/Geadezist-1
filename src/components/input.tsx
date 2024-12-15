@@ -6,7 +6,7 @@ interface BaseInputProps {
 }
 
 interface TextInputProps extends InputHTMLAttributes<HTMLInputElement>, BaseInputProps {
-  type?: 'text' | 'email' | 'password' | 'number';
+  type?: 'text' | 'email' | 'password' | 'number' | 'tel';
 }
 
 interface SelectInputProps extends SelectHTMLAttributes<HTMLSelectElement>, BaseInputProps {

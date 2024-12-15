@@ -27,7 +27,6 @@ const Header: React.FC = () => {
       <div className="lg:hidden">
         <Sidebar />
       </div>
-<<<<<<< HEAD
       
 <div className="flex items-center gap-4 mr-5">
     
@@ -37,16 +36,6 @@ const Header: React.FC = () => {
     </div>
     <img className="w-10 h-10 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="logo"/>
 </div>
-=======
-
-      <div className="flex items-center gap-4 mr-5">
-
-        <div className="text-center font-medium dark:text-white">
-          <div>{user?.name || "Guest"}</div>
-          <div className="text-sm text-gray-500 dark:text-gray-400">{user?.role}</div>
-        </div>
-        <Dropdown trigger={<img className="w-10 h-10 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="logo" />} options={options} />      </div>
->>>>>>> 247f6876c481ec916cfc643d218578de7acb640f
     </header>
   );
 };
