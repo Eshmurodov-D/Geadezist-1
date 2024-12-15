@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 function Dashboard2() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const navigate = useNavigate();
 
     const dashboardData = {
         user: {
@@ -40,6 +39,10 @@ function Dashboard2() {
             score: "3.3",
             answers: "03.12.2024",
         },
+        mode: {
+            imageUrl: "https://cdn-icons-png.flaticon.com/128/11502/11502607.png",
+            cancelButtonText: "Chiqish",
+        },
         modal: {
             title: "Сиз аник тизмадан чиқмоқчимиз?",
             confirmButtonText: "Ҳа",
@@ -51,17 +54,17 @@ function Dashboard2() {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
-    // const openModal = () => {
-    //     setIsModalOpen(true);
-    // };
-
     const closeModal = () => {
         setIsModalOpen(false);
     };
 
-    const handleLogout = () => {
-        navigate("/Register");
+    const openImageModal = (imageUrl: string): void => {
+        if (!imageUrl) {
+            return;
+        }
+        setIsModalOpen(true);
     };
+
 
     return (
         <div className="min-h-screen flex bg-gray-100 flex-col">
@@ -116,26 +119,6 @@ function Dashboard2() {
                                     {item.label}
                                 </a>
                             ))}
-                            {/*<button*/}
-                            {/*    onClick={openModal}*/}
-                            {/*    className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 hover:opacity-100 transition-opacity duration-300 ease-in-out"*/}
-                            {/*>*/}
-                            {/*    <svg*/}
-                            {/*        xmlns="http://www.w3.org/2000/svg"*/}
-                            {/*        className="h-10 w-10 mr-2 text-gray-500"*/}
-                            {/*        fill="none"*/}
-                            {/*        viewBox="0 0 24 24"*/}
-                            {/*        stroke="currentColor"*/}
-                            {/*        strokeWidth="2"*/}
-                            {/*    >*/}
-                            {/*        <path*/}
-                            {/*            strokeLinecap="round"*/}
-                            {/*            strokeLinejoin="round"*/}
-                            {/*            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1m0-6V7"*/}
-                            {/*        />*/}
-                            {/*    </svg>*/}
-                            {/*    {dashboardData.dropdownItems[1].label}*/}
-                            {/*</button>*/}
                         </div>
                     )}
                 </div>
@@ -171,6 +154,7 @@ function Dashboard2() {
                     <div className="max-w-md rounded overflow-hidden shadow-xl relative group">
                         <div
                             className="w-96 h-52 flex items-center justify-center ml-8 translate-y-6 -mb-16 relative"
+                            onClick={() => openImageModal(dashboardData.card.imageUrl)} // Open modal on click
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -223,7 +207,7 @@ function Dashboard2() {
                             </p>
                         </div>
                         <div className="px-6 pt-4 pb-2 text-center">
-                            <button className="min-w-96 mt-4 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded transition">
+                            <button className="min-w-96 mt-4 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-full">
                                 {dashboardData.card.buttonText}
                             </button>
                         </div>
@@ -233,21 +217,35 @@ function Dashboard2() {
 
             {/* Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg">
-                        <h3 className="text-xl mb-4">{dashboardData.modal.title}</h3>
-                        <div className="flex justify-end space-x-4">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                    <div className="bg-white p-4 rounded-lg shadow-lg max-w-lg w-full">
+                        <button
+                            onClick={closeModal}
+                            className="absolute top-2 right-2 text-gray-600"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="w-6 h-6"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <path d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                        <img
+                            src={dashboardData.mode.imageUrl}
+                            alt="Modal"
+                            className="w-full h-auto"
+                        />
+                        <div className="flex justify-end mt-4">
                             <button
                                 onClick={closeModal}
-                                className="px-4 py-2 bg-gray-500 text-white rounded"
+                                className="px-4 py-2 bg-red-600 text-white rounded-lg"
                             >
-                                {dashboardData.modal.cancelButtonText}
-                            </button>
-                            <button
-                                onClick={handleLogout} // Handle redirection on "Ҳа"
-                                className="px-4 py-2 bg-red-500 text-white rounded"
-                            >
-                                {dashboardData.modal.confirmButtonText}
+                                {dashboardData.mode.cancelButtonText}
                             </button>
                         </div>
                     </div>
