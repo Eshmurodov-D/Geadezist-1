@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";  // useNavigate hookini chaqirish
+import { useNavigate } from "react-router-dom";
 import useAuthStore from "../store/useAuthStore";
 
 const Login: React.FC = () => {
@@ -10,8 +10,8 @@ const Login: React.FC = () => {
 
   const handleLogin = () => {
     if (username.trim()) {
-      login({ id: "1", name: username, role });  // foydalanuvchini login qilish
-      navigate("/dashboard");  // Tizimga kirganidan keyin Dashboard sahifasiga yo'naltirish
+      login({ id: "1", name: username, role });
+      navigate("/dashboard");
     } else {
       alert("Foydalanuvchi nomini kiriting!");
     }

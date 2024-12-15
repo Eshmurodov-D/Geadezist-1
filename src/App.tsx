@@ -1,13 +1,13 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Dashboard2 from "./Client/dashboard2";
+import Client from "./Client/Client.tsx";
 
 const App: React.FC = () => {
     return (
         <div className="bg-gray-100 min-h-screen">
             <BrowserRouter>
                 <Routes>
-                    <Route path="/dashboard2" element={<Dashboard2 />} />
+                    <Route path="/Client" element={<Client />} />
                 </Routes>
             </BrowserRouter>
         </div>
