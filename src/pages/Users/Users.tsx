@@ -3,6 +3,11 @@ import Table from "../../components/Table/Table";
 import Button from "../../components/Button";
 import Modal from "../../components/modal";
 import { IoEyeSharp } from "react-icons/io5";
+import Box from "@mui/material/Box";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 // User type
 interface User {
@@ -12,26 +17,38 @@ interface User {
   birthday: string;
   phumber: number;
   province: string;
-  provincee: string;
+  district: string;
   street: string;
   email: string;
 }
 
+// Define the provinces and districts
+const provinces: { [key: string]: string[] | undefined } = {
+  Toshkent: ["Chilonzor", "Yunusobod"],
+  Samarqand: ["Oqdaryo", "Urgut"],
+};
+
+// Define the filter fields
+const filterFields = [
+  { key: "search", label: "Фойдаланувчи қидириш...", type: "text" },
+  {
+    key: "province",
+    label: "Viloyat",
+    type: "select",
+    options: Object.keys(provinces),
+  },
+  { key: "district", label: "Туман", type: "select", options: [] },
+];
+
 const Users: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedProvince, setSelectedProvince] = useState("");
-  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [filters, setFilters] = useState<{ [key: string]: string }>({
+    search: "",
+    province: "",
+    district: "",
+  });
 
-  const viloyat = {
-    Тошкент: "Тошкент",
-    Самарқанд: "Самарқанд",
-  };
-  const tuman = {
-    chilonzor: "toshknet",
-    yunsobod: "Самарқанд",
-  };
   const tableData: User[] = [
     {
       id: 1,
@@ -41,7 +58,7 @@ const Users: React.FC = () => {
       phumber: 998909990990,
       email: "ibrohim001@gmail.com",
       province: "Toshkent",
-      provincee: "Chilonzor",
+      district: "Chilonzor",
       street: "Amir Temur ko'chasi",
     },
     {
@@ -52,7 +69,7 @@ const Users: React.FC = () => {
       phumber: 998909990990,
       email: "amir238@gmail.com",
       province: "Samarqand",
-      provincee: "Yunusobod",
+      district: "Urgut",
       street: "Gagarin ko'chasi",
     },
     {
@@ -63,7 +80,7 @@ const Users: React.FC = () => {
       phumber: 998909990990,
       email: "boxodir110@gmail.com",
       province: "Samarqand",
-      provincee: "Chilonzor",
+      district: "Oqdaryo",
       street: "Beruniy ko'chasi",
     },
     {
@@ -74,25 +91,24 @@ const Users: React.FC = () => {
       phumber: 998909990990,
       email: "dilshod220@gmail.com",
       province: "Toshkent",
-      provincee: "Yunusobod",
+      district: "Yunusobod",
       street: "Navoi ko'chasi",
     },
   ];
 
   const filteredData = tableData.filter((user) => {
-    const matchesSearchTerm =
-      user.firstname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.lastname.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      user.firstname.toLowerCase().includes(filters.search.toLowerCase()) ||
+      user.lastname.toLowerCase().includes(filters.search.toLowerCase());
 
-    const matchesProvince = selectedProvince
-      ? user.province === selectedProvince
+    const matchesProvince = filters.province
+      ? user.province === filters.province
+      : true;
+    const matchesDistrict = filters.district
+      ? user.district === filters.district
       : true;
 
-    const matchesDistrict = selectedDistrict
-      ? user.provincee === selectedDistrict
-      : true;
-
-    return matchesSearchTerm && matchesProvince && matchesDistrict;
+    return matchesSearch && matchesProvince && matchesDistrict;
   });
 
   const tableColumns = [
@@ -101,7 +117,7 @@ const Users: React.FC = () => {
     { key: "lastname", title: "Фамилия" },
     { key: "email", title: "Электрон почта" },
     { key: "province", title: "Вилоят" },
-    { key: "provincee", title: "Туман" },
+    { key: "district", title: "district" },
     {
       key: "actions",
       title: "Харакат",
@@ -127,47 +143,63 @@ const Users: React.FC = () => {
     setSelectedUser(null);
   };
 
+  const handleFilterChange = (key: string, value: string) => {
+    setFilters((prev) => {
+      const newFilters = { ...prev, [key]: value };
+      if (key === "province") {
+        newFilters.district = "";
+      }
+      return newFilters;
+    });
+  };
+
   return (
     <div className="p-4 bg-white shadow rounded">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl pt-10 font-semibold text-gray-700">Ходимлар</h1>
       </div>
 
-      {/* Top 3 Input Fields */}
+      {/* Filter Fields */}
       <div className="flex items-center space-x-4 w-full mb-8">
-        <div className="flex-1">
-          <input
-            type="text"
-            placeholder="Фойдаланувчи қидириш..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-lg text-gray-700"
-          />
-        </div>
+        {filterFields.map((field) => (
+          <div key={field.key} className="flex-1">
+            {field.type === "text" ? (
+              <input
+                type="text"
+                placeholder={field.label}
+                value={filters[field.key]}
+                onChange={(e) => handleFilterChange(field.key, e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded-lg text-gray-700 h-[56px]"
+              />
+            ) : (
+              <FormControl fullWidth>
+  <InputLabel id={`${field.key}-select-label`}>
+    {field.label}
+  </InputLabel>
+  <Select
+    labelId={`${field.key}-select-label`}
+    id={`${field.key}-select`}
+    value={filters[field.key]}
+    label={field.label}
+    onChange={(e) =>
+      handleFilterChange(field.key, e.target.value)
+    }
+    sx={{ height: "56px" }}
+  >
+    {(field.key === "district" && filters.province
+      ? provinces[filters.province] || []
+      : field.options || []
+    ).map((option) => (
+      <MenuItem key={option} value={option}>
+        {option}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
 
-        <div className="flex-1">
-          <select
-            value={selectedProvince}
-            onChange={(e) => setSelectedProvince(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-lg text-gray-700"
-          >
-            <option value="">Вилоятни танланг</option>
-            <option value="Toshkent">{viloyat.Тошкент}</option>
-            <option value="Samarqand">{viloyat.Самарқанд}</option>
-          </select>
-        </div>
-
-        <div className="flex-1">
-          <select
-            value={selectedDistrict}
-            onChange={(e) => setSelectedDistrict(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-lg text-gray-700"
-          >
-            <option value="">Туманни танланг</option>
-            <option value="Chilonzor">{tuman.chilonzor}</option>
-            <option value="Yunusobod">{tuman.yunsobod}</option>
-          </select>
-        </div>
+            )}
+          </div>
+        ))}
       </div>
 
       {/* Table */}
@@ -203,7 +235,7 @@ const Users: React.FC = () => {
             </p>
             <p className="mb-4 flex justify-between">
               <strong>Tumani:</strong>
-              <span>{selectedUser.provincee}</span>
+              <span>{selectedUser.district}</span>
             </p>
             <p className="mb-4 flex justify-between">
               <strong>Ko'chasi:</strong>
@@ -214,5 +246,6 @@ const Users: React.FC = () => {
       </Modal>
     </div>
   );
-}
-export default Users
+};
+
+export default Users;
