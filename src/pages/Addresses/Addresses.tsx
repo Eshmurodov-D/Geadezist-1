@@ -1,12 +1,4 @@
 
-
-
-
-
-
-
-
-
 import { useState, useEffect } from 'react';
 import { useManzilStore } from '../../store/manzilStore';
 import { Link } from 'react-router-dom';
@@ -24,9 +16,9 @@ function Addresses() {
     tumanlar,
     addViloyat,
     addTuman,
-    deleteViloyat,
+    // deleteViloyat,
     deleteTuman,
-    updateViloyat,
+    // updateViloyat,
     updateTuman,
   } = useManzilStore();
 
@@ -36,10 +28,10 @@ function Addresses() {
   const [yangiTuman, setYangiTuman] = useState<Tuman>({ viloyat: '', nom: '' });
   const [showViloyatModal, setShowViloyatModal] = useState<boolean>(false);
   const [showTumanModal, setShowTumanModal] = useState<boolean>(false);
-  const [editingViloyat, setEditingViloyat] = useState<string | null>(null);
+  const [editingViloyat] = useState<string | null>(null);
   const [editingTuman, setEditingTuman] = useState<Tuman | null>(null);
 
-  useEffect(() => {
+  useEffect(() => { 
     const savedViloyatlar = JSON.parse(localStorage.getItem('viloyatlar') || '[]');
     const savedTumanlar = JSON.parse(localStorage.getItem('tumanlar') || '[]');
     savedViloyatlar.forEach((viloyat: string) => addViloyat(viloyat));

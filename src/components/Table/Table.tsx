@@ -5,7 +5,7 @@ interface Column {
   title: string;
   render?: (value: any, record: any) => React.ReactNode;
 }
-
+   
 interface TableProps {
   data: any[];
   columns: Column[];

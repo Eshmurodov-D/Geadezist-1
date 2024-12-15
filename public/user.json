@@ -1,0 +1,14 @@
+{
+  "user-info": [
+    {
+      "id": 1,
+      "fullName": "Ibbi",
+      "lastName": "sas",
+      "email": "salom@gmail.con",
+      "phone": "999",
+      "position": "Текширувчи админ",
+      "role": "admin",
+      "isActive": true
+    }
+  ]
+}
