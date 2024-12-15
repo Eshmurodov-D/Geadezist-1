@@ -214,6 +214,4 @@ const Users: React.FC = () => {
       </Modal>
     </div>
   );
-};
-
-export default Users;
+}
