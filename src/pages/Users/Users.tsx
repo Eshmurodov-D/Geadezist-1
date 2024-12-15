@@ -7,6 +7,5 @@ const Users: React.FC = () => {
       <p>Bu bo'limda foydalanuvchilarni boshqarish mumkin.</p>
     </div>
   );
-};
-
-export default Users;
+}
+export default  Users

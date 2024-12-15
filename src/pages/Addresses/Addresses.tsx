@@ -193,9 +193,8 @@ function Addresses() {
         <button onClick={postMalumotlar} className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600">Maʼlumotlarni yuborish</button>
         <Link to="/userprofile">User Profil</Link>
         <Button
-          label="btn"
           onClick={() => console.log('bosildi')}
-          
+          children="salom"
         //   className={{ color: 'red', fontSize: '14px', padding: '10px 20px', borderRadius: '12px' }}
         />
       </div>
