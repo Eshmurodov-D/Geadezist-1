@@ -139,7 +139,7 @@ const Employees: React.FC = () => {
       title: "Активлиги",
       render: (row: Employee) => (
         <Button
-          variant={row.isActive ? "success" : "danger"}
+          variant={row.isActive ? 'danger' : "danger"}
           size="small"
           onClick={() => toggleActive(row.id)}
         >

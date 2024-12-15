@@ -127,7 +127,8 @@ const Users: React.FC = () => {
           size="medium"
           onClick={() => handleOpenModal(record)}
         >
-          <IoEyeSharp />
+          {/* <IoEyeSharp/> */}
+          {/* <IoEyeSharp /> */}
         </Button>
       ),
     },

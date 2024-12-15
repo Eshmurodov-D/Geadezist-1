@@ -1,26 +1,32 @@
+// Dropdown.tsx
 import React, { useState, useEffect, ReactNode } from "react";
 
+// Defining types for the dropdown options
 export interface DropdownOption {
-  label: string; 
-  type?: 'button' | 'text'; 
+  label: string;
+  type?: "button" | "text";
+  onClick?: () => void; // Optional onClick handler
 }
 
 interface DropdownProps {
-  trigger: ReactNode; 
+  trigger: ReactNode;
   options: DropdownOption[];
 }
 
 const Dropdown: React.FC<DropdownProps> = ({ trigger, options }) => {
-  const [isOpen, setIsOpen] = useState(false); 
+  const [isOpen, setIsOpen] = useState(false); // To toggle dropdown visibility
 
+  // Function to toggle dropdown open/close
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
+  // Function to close dropdown
   const closeDropdown = () => {
     setIsOpen(false);
   };
 
+  // Close dropdown when clicked outside
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
@@ -37,10 +43,12 @@ const Dropdown: React.FC<DropdownProps> = ({ trigger, options }) => {
 
   return (
     <div className="dropdown-container relative inline-block">
+      {/* Trigger to open/close dropdown */}
       <div onClick={toggleDropdown} className="cursor-pointer">
         {trigger}
       </div>
 
+      {/* Dropdown menu, only visible if isOpen is true */}
       {isOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-lg z-10">
           <ul className="py-1">
@@ -49,16 +57,19 @@ const Dropdown: React.FC<DropdownProps> = ({ trigger, options }) => {
                 key={index}
                 className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
                 onClick={() => {
+                  // Close dropdown when an option is selected
                   closeDropdown();
+                  // Call the onClick handler if it exists
+                  option.onClick && option.onClick();
                 }}
               >
-                {option.type === 'button' ? (
-                  <button
-                    className="w-full bg-blue-500 text-white py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 hover:bg-blue-600 transition-all duration-200 ease-in-out"
-                  >
+                {option.type === "button" ? (
+                  // If the option type is 'button', render a button
+                  <button className="w-full text-left">
                     {option.label}
                   </button>
                 ) : (
+                  // If the option type is 'text', just render a span
                   <span>{option.label}</span>
                 )}
               </li>
