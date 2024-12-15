@@ -17,7 +17,6 @@ const Header: React.FC = () => {
       label: 'Amr',
     },
     {
-      type:'button',
       label: 'Amr',
     },
   ];
@@ -35,7 +34,7 @@ const Header: React.FC = () => {
           <div>{user?.name || "Guest"}</div>
           <div className="text-sm text-gray-500 dark:text-gray-400">{user?.role}</div>
         </div>
-        <Dropdown trigger={<h1>salom</h1>} options={options} />      </div>
+        <Dropdown trigger={<img className="w-10 h-10 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="logo" />} options={options} />      </div>
     </header>
   );
 };
