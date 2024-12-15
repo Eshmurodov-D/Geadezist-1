@@ -1,12 +1,3 @@
-
-
-
-
-
-
-
-
-
 import { useState, useEffect } from 'react';
 import { useManzilStore } from '../../store/manzilStore';
 import { Link } from 'react-router-dom';
@@ -18,7 +9,7 @@ type Tuman = {
   nom: string;
 };
 
-function Addresses() {
+function Manzil() {
   const {
     viloyatlar,
     tumanlar,
@@ -203,5 +194,4 @@ function Addresses() {
   );
 }
 
-
-export default Addresses;
+export default Manzil;
