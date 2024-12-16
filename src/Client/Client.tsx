@@ -1,10 +1,19 @@
-import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import axios from "axios";
+
+interface Certificate {
+    id: number;
+    title: string;
+    description: string;
+    score: number;
+    date: string;
+    imageUrl?: string;  // Optional image URL
+}
 
 function Dashboard2() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
+    const [certificateData, setCertificateData] = useState<Certificate | null>(null);
 
     const dashboardData = {
         user: {
@@ -14,7 +23,7 @@ function Dashboard2() {
         },
         dropdownItems: [
             {
-                label: "Профил",
+                label: "Профиль",
                 icon: "https://via.placeholder.com/150"
             },
             {
@@ -30,21 +39,21 @@ function Dashboard2() {
             date: "Тест топширилган сана:",
             previewText: "Preview",
             imageUrl: "https://cdn-icons-png.flaticon.com/128/11502/11502607.png",
-            additionalInfo: "Қўшимча йўналишлардан ишланганлар",
-            buttonText: "Кутилмоқда"
+            additionalInfo: "Қошимча маълумотлар",
+            buttonText: "Кутилаётган"
         },
         section: {
             title: "1/3",
             duration: "2 дақ.",
             score: "3.3",
-            answers: "03.12.2024",
+            answers: "03.12.2024"
         },
         mode: {
             imageUrl: "https://cdn-icons-png.flaticon.com/128/11502/11502607.png",
-            cancelButtonText: "Chiqish",
+            cancelButtonText: "Чиқиш"
         },
         modal: {
-            title: "Сиз аник тизмадан чиқмоқчимиз?",
+            title: "Сиз аник тизмадан чиқмоқчимисиз?",
             confirmButtonText: "Ҳа",
             cancelButtonText: "Йўқ"
         }
@@ -55,16 +64,25 @@ function Dashboard2() {
     };
 
     const closeModal = () => {
-        setIsModalOpen(false);
+        setIsModalOpen(false); // Close modal
     };
 
-    const openImageModal = (imageUrl: string): void => {
-        if (!imageUrl) {
-            return;
+    const openImageModal = (imageUrl?: string): void => {
+        if (imageUrl) {
+            setIsModalOpen(true); // Open modal only if imageUrl is provided
         }
-        setIsModalOpen(true);
     };
 
+    useEffect(() => {
+        axios
+            .get("http://142.93.106.195:9090/certificate/2")
+            .then((response) => {
+                setCertificateData(response.data);
+            })
+            .catch((error) => {
+                console.error("Error fetching certificate data:", error);
+            });
+    }, []);
 
     return (
         <div className="min-h-screen flex bg-gray-100 flex-col">
@@ -152,105 +170,50 @@ function Dashboard2() {
 
                     {/* Card Section */}
                     <div className="max-w-md rounded overflow-hidden shadow-xl relative group">
-                        <div
-                            className="w-96 h-52 flex items-center justify-center ml-8 translate-y-6 -mb-16 relative"
-                            onClick={() => openImageModal(dashboardData.card.imageUrl)} // Open modal on click
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="w-96 h-64 translate-y-8 bg-gray-200 text-gray-500"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
-                                <rect
-                                    x="3"
-                                    y="3"
-                                    width="18"
-                                    height="18"
-                                    rx="2"
-                                    ry="2"
-                                ></rect>
-                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                <path d="M21 15l-5-5L5 21"></path>
-                            </svg>
-                            <div className="rounded-md absolute inset-0 bg-gray-800 h-64 translate-y-2 bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                                <img
-                                    src={dashboardData.card.imageUrl}
-                                    alt="Eye Icon"
-                                    className="w-12 h-12"
-                                />
-                                <h1 className="">{dashboardData.card.previewText}</h1>
+                        {certificateData ? (
+                            <div className="p-6">
+                                <h3 className="text-xl font-bold text-center">{certificateData.title}</h3>
+                                <p className="mt-4 text-gray-600">{certificateData.description}</p>
+                                <p className="mt-2 text-gray-600">Баллы: {certificateData.score}</p>
+                                <p className="mt-2 text-gray-600">Дата: {certificateData.date}</p>
+                                {certificateData.imageUrl && (
+                                    <button
+                                        onClick={() => openImageModal(certificateData.imageUrl)}
+                                        className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
+                                    >
+                                        Open Image
+                                    </button>
+                                )}
                             </div>
-                        </div>
-                        <div className="px-6 py-4">
-                            <h3 className="text-xl translate-y-32 font-semibold text-red-600 text-center mb-8">
-                                {dashboardData.card.title}
-                            </h3>
-                            <div className="text-xl text-gray-600 space-y-3 font-sans translate-y-32">
-                                <p>{dashboardData.card.answers}</p>
-                                <p>{dashboardData.card.duration}</p>
-                                <p>{dashboardData.card.score}</p>
-                                <p>{dashboardData.card.date}</p>
-                            </div>
-                            <div className="text-base font-sans -translate-y-4 mb-6 space-y-4">
-                                <p className="font-bold text-right text-gray-500">{dashboardData.section.title}</p>
-                                <p className="font-bold text-right text-gray-500">{dashboardData.section.duration}</p>
-                                <p className="font-bold text-right text-gray-500">{dashboardData.section.score}</p>
-                                <p className="font-bold text-right text-gray-500">{dashboardData.section.answers}</p>
-                            </div>
-                            <p className="text-red-600 font-medium mt-3 text-center text-xl">
-                                {dashboardData.card.additionalInfo}
-                            </p>
-                        </div>
-                        <div className="px-6 pt-4 pb-2 text-center">
-                            <button className="min-w-96 mt-4 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-full">
-                                {dashboardData.card.buttonText}
-                            </button>
-                        </div>
+                        ) : (
+                            <p className="text-center text-gray-500">yuklanmoqda...</p>
+                        )}
                     </div>
+
+                    {/* Modal */}
+                    {isModalOpen && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                            <div className="bg-white p-6 rounded-md shadow-lg max-w-sm w-full">
+                                <h3 className="text-xl font-semibold">{dashboardData.modal.title}</h3>
+                                <div className="mt-4 flex justify-between">
+                                    <button
+                                        onClick={closeModal}
+                                        className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md"
+                                    >
+                                        {dashboardData.modal.cancelButtonText}
+                                    </button>
+                                    <button
+                                        onClick={closeModal}
+                                        className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                                    >
+                                        {dashboardData.modal.confirmButtonText}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </main>
             </div>
-
-            {/* Modal */}
-            {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                    <div className="bg-white p-4 rounded-lg shadow-lg max-w-lg w-full">
-                        <button
-                            onClick={closeModal}
-                            className="absolute top-2 right-2 text-gray-600"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="w-6 h-6"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
-                                <path d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
-                        <img
-                            src={dashboardData.mode.imageUrl}
-                            alt="Modal"
-                            className="w-full h-auto"
-                        />
-                        <div className="flex justify-end mt-4">
-                            <button
-                                onClick={closeModal}
-                                className="px-4 py-2 bg-red-600 text-white rounded-lg"
-                            >
-                                {dashboardData.mode.cancelButtonText}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
