@@ -1,18 +1,18 @@
-import Quiz from "@/pages/Test/quiz";
-import ResultPage from "@/pages/Test/result";
-import Results from "@/pages/Test/Results";
-import React from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
-import AdminLayout from "../Layout/AdminLayout";
-import Addresses from "../pages/Addresses/Addresses";
-import Categories from "../pages/Categories/Categories";
-import Dashboard from "../pages/Dashboard/Dashboard";
-import Employees from "../pages/Employees/Employees";
-import Login from "../pages/Login";
-import Test from "../pages/Test/Test";
-import UserResults from "../pages/User-results/UserResults";
-import Users from "../pages/Users/Users";
-import useAuthStore from "../store/useAuthStore";
+// import Quiz from '@/pages/Test/quiz'
+import React from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
+import AdminLayout from '../Layout/AdminLayout'
+import Addresses from '../pages/Addresses/Addresses'
+import Categories from '../pages/Categories/Categories'
+import Dashboard from '../pages/Dashboard/Dashboard'
+import Employees from '../pages/Employees/Employees'
+import Login from '../pages/Login'
+import Test from '../pages/Test/Test'
+import UserResults from '../pages/User-results/UserResults'
+import Users from '../pages/Users/Users'
+import useAuthStore from '../store/useAuthStore'
+import Quiz from '../pages/Test/quiz'
+import Results from '@/pages/Test/Results'
 
 const AppRoutes: React.FC = () => {
   const { user } = useAuthStore(); // Foydalanuvchi holatini olish
@@ -37,17 +37,16 @@ const AppRoutes: React.FC = () => {
       ? role.includes(user?.role || "")
       : user?.role === role;
 
-    return hasAccess ? component : <Navigate to="/login" />;
-  };
-  return (
-    <Routes>
-      <Route path="/tests" element={<Quiz />} />
-      <Route path="/result" element={<ResultPage />} />
-      {/* Login sahifasi */}
-      <Route
-        path="/login"
-        element={user ? <Navigate to={getDefaultRedirectPath()} /> : <Login />}
-      />
+		return hasAccess ? component : <Navigate to='/login' />
+	}
+	return (
+		<Routes>
+			<Route path='/tests' element={<Quiz	 />} />
+			{/* Login sahifasi */}
+			<Route
+				path='/login'
+				element={user ? <Navigate to={getDefaultRedirectPath()} /> : <Login />}
+			/>
 
       {/* Admin layout */}
       <Route

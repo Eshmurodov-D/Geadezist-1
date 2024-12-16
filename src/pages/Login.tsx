@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom' // useNavigate hookini chaqirish
-import useAuthStore from '../store/useAuthStore'
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import useAuthStore from "../store/useAuthStore";
 
 const Login: React.FC = () => {
 	const [username, setUsername] = useState('')
@@ -10,14 +10,15 @@ const Login: React.FC = () => {
 	const { login } = useAuthStore()
 	const navigate = useNavigate() // navigate hookini chaqirish
 
-	const handleLogin = () => {
-		if (username.trim()) {
-			login({ id: '1', name: username, role }) // foydalanuvchini login qilish
-			navigate('/dashboard') // Tizimga kirganidan keyin Dashboard sahifasiga yo'naltirish
-		} else {
-			alert('Foydalanuvchi nomini kiriting!')
-		}
-	}
+  const handleLogin = () => {
+    if (username.trim()) {
+      login({ id: "1", name: username, role });
+      navigate("/dashboard");
+    } else {
+      alert("Foydalanuvchi nomini kiriting!");
+    }
+  };
+	
 
 	return (
 		<div className='flex items-center justify-center h-screen bg-gray-100'>
