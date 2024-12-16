@@ -97,7 +97,7 @@ const Categories: React.FC = () => {
           <span className="icon text-2xl">
             <PiPlusCircleLight />
           </span>
-          <span>Қўшиш</span>
+          <span>kushish</span>
         </Button>
       </div>
 
