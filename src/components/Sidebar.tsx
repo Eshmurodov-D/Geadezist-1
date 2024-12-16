@@ -28,7 +28,7 @@ const Sidebar: React.FC = () => {
 		},
 		{ name: 'Ходимлар', path: '/employees', roles: ['superadmin'] },
 		{ name: 'Манзил', path: '/addresses', roles: ['superadmin'] },
-		{ name: 'Натижалар булими', path: '/result', roles: ['client'] },
+		{ name: 'Натижалар булими', path: '/results', roles: ['client'] },
 	]
 	// Sidebarni ochish-yopish funksiyasi
 	const toggleSidebar = () => {

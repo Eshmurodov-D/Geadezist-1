@@ -9,6 +9,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 
 interface Question {
 	question: string
@@ -86,7 +87,7 @@ const Quiz = () => {
 			!selectedAnswer ||
 			(Array.isArray(selectedAnswer) && selectedAnswer.length === 0)
 		) {
-			alert('Please select an answer before proceeding!')
+			toast.warning('Please select an answer before proceeding!')
 			return
 		}
 
@@ -256,7 +257,7 @@ const Quiz = () => {
 						</p>
 						<div className='flex justify-center'>
 							<Button className='px-7 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-lg'>
-								<Link to='/result'>Натижаларни кўриш</Link>
+								<Link to='/results'>Натижаларни кўриш</Link>
 							</Button>
 						</div>
 					</div>
