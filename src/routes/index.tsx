@@ -1,4 +1,4 @@
-import Quiz from '@/pages/Test/quiz'
+// import Quiz from '@/pages/Test/quiz'
 import React from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import AdminLayout from '../Layout/AdminLayout'
@@ -11,6 +11,7 @@ import Test from '../pages/Test/Test'
 import UserResults from '../pages/User-results/UserResults'
 import Users from '../pages/Users/Users'
 import useAuthStore from '../store/useAuthStore'
+import Quiz from '../pages/Test/quiz'
 
 const AppRoutes: React.FC = () => {
 	const { user } = useAuthStore() // Foydalanuvchi holatini olish
@@ -39,7 +40,7 @@ const AppRoutes: React.FC = () => {
 	}
 	return (
 		<Routes>
-			<Route path='/tests' element={<Quiz />} />
+			<Route path='/tests' element={<Quiz	 />} />
 			{/* Login sahifasi */}
 			<Route
 				path='/login'

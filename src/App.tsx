@@ -1,14 +1,12 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Client from "./Client/Client.tsx";
+import { BrowserRouter,} from "react-router-dom";
+import AppRoutes from "./routes/index.tsx";
 
 const App: React.FC = () => {
     return (
         <div className="bg-gray-100 min-h-screen">
             <BrowserRouter>
-                <Routes>
-                    <Route path="/Client" element={<Client />} />
-                </Routes>
+            <AppRoutes />
             </BrowserRouter>
         </div>
     );
