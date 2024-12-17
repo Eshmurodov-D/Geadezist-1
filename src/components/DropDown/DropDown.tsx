@@ -1,11 +1,10 @@
 // Dropdown.tsx
 import React, { useState, useEffect, ReactNode } from "react";
 
-// Defining types for the dropdown options
 export interface DropdownOption {
   label: string;
   type?: "button" | "text";
-  onClick?: () => void; // Optional onClick handler
+  onClick?: () => void; 
 }
 
 interface DropdownProps {
@@ -14,19 +13,16 @@ interface DropdownProps {
 }
 
 const Dropdown: React.FC<DropdownProps> = ({ trigger, options }) => {
-  const [isOpen, setIsOpen] = useState(false); // To toggle dropdown visibility
+  const [isOpen, setIsOpen] = useState(false); 
 
-  // Function to toggle dropdown open/close
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
-  // Function to close dropdown
   const closeDropdown = () => {
     setIsOpen(false);
   };
 
-  // Close dropdown when clicked outside
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement;

@@ -12,7 +12,8 @@ import Employees from "../pages/Employees/Employees";
 import Addresses from "../pages/Addresses/Addresses";
 
 const AppRoutes: React.FC = () => {
-    const { user } = useAuthStore(); // Foydalanuvchi holatini olish
+    const { user } = useAuthStore(); // Foydala
+    // nuvchi holatini olish
     // Default redirect sahifa
     const getDefaultRedirectPath = () => {
         switch (user?.role) {
