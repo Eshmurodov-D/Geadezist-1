@@ -4,6 +4,15 @@ import Button from "../../components/Button";
 import Modal from "../../components/modal";
 import Input from "../../components/input";
 
+// API'dan keladigan foydalanuvchi ma'lumotlari uchun interfeys
+interface UserData {
+  id: number;
+  name: string;
+  email: string;
+  phone?: string;
+}
+
+// Xodimlar uchun interfeys
 interface Employee {
   id: number;
   fullName: string;
@@ -29,16 +38,23 @@ const Employees: React.FC = () => {
     confirmPassword: "",
   });
 
-  // JSON-serverdan ma'lumot olish
+  // API'dan ma'lumot olish
   useEffect(() => {
-    fetch("http://localhost:3000/user-info")
+    fetch("https://jsonplaceholder.typicode.com/users")
       .then((res) => res.json())
-      .then((data) => {
-        setEmployees(data);
-        // LocalStorage'ga yozish
-        localStorage.setItem("employees", JSON.stringify(data));
-      })
-      .catch((err) => console.error("Ma'lumotni olishda xato:", err));
+      .then((data: UserData[]) => {
+        const transformedData: Employee[] = data.map((user) => ({
+          id: user.id,
+          fullName: user.name.split(" ")[0],
+          lastName: user.name.split(" ")[1] || "",
+          email: user.email,
+          phone: user.phone || "Noma'lum",
+          position: "Tashqi foydalanuvchi",
+          role: "admin",
+          isActive: true,
+        }));
+        setEmployees(transformedData);
+      });
   }, []);
 
   const handleChange = (
