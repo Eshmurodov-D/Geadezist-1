@@ -1,12 +1,9 @@
-<<<<<<< HEAD
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../store/useAuthStore";
-=======
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom' // useNavigate hookini chaqirish
 import useAuthStore from '../store/useAuthStore'
->>>>>>> 974f70f03c046c65d83889f4e6f5cd1e7a03e8ff
 
 const Login: React.FC = () => {
 	const [username, setUsername] = useState('')
@@ -16,7 +13,6 @@ const Login: React.FC = () => {
 	const { login } = useAuthStore()
 	const navigate = useNavigate() // navigate hookini chaqirish
 
-<<<<<<< HEAD
   const handleLogin = () => {
     if (username.trim()) {
       login({ id: "1", name: username, role });
@@ -25,7 +21,6 @@ const Login: React.FC = () => {
       alert("Foydalanuvchi nomini kiriting!");
     }
   };
-=======
 	const handleLogin = () => {
 		if (username.trim()) {
 			login({ id: '1', name: username, role }) // foydalanuvchini login qilish
@@ -34,7 +29,6 @@ const Login: React.FC = () => {
 			alert('Foydalanuvchi nomini kiriting!')
 		}
 	}
->>>>>>> 974f70f03c046c65d83889f4e6f5cd1e7a03e8ff
 
 	return (
 		<div className='flex items-center justify-center h-screen bg-gray-100'>
