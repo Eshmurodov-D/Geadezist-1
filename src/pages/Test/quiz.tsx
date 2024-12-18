@@ -7,78 +7,71 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
+import { BASE_URL } from '@/services/api'
+import axiosConfiguration from '@/services/axios'
+import useTestStore from '@/store/tets.store'
+import { OptionType } from '@/types/test'
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 
-interface Question {
-	question: string
-	options?: string[]
-	correctAnswer: string
-	type: 'ONE_CHOICE' | 'MULTIPLE_CHOICE' | 'INPUT'
-	isCompleted: boolean
-	img?: string
-	answer?: string | string[]
-}
-
-interface QuizState {
+interface QuestionDto {
+	id: number
+	attachmentIds: number[]
+	categoryId: number
+	categoryName: string
+	createdByName: string
+	difficulty: 'HARD' | 'MEDIUM' | 'EASY'
+	finiteError: number
 	name: string
-	questions: Question[]
+	optionDtos: OptionType[]
+	type: 'ANY_CORRECT' | 'MANY_CHOICE' | 'INPUT'
 }
 
 const Quiz = () => {
-	const [tests, setTests] = useState<QuizState>({
-		name: 'Test nomi',
-		questions: [
-			{
-				question: 'Savol 1: sejirwlejtg',
-				options: ['isrug', 'turi', 'srth', 'serg'],
-				correctAnswer: 'isrug',
-				type: 'ONE_CHOICE',
-				isCompleted: false,
-			},
-			{
-				question: "Savol 2: Nima bo'ladi?",
-				options: ['javob 1', 'javob 2', 'javob 3', 'javob 4'],
-				correctAnswer: 'javob 2',
-				type: 'MULTIPLE_CHOICE',
-				isCompleted: false,
-			},
-			{
-				question: 'Savol 3: Xatolik qayerda?',
-				options: ['Xatolik 1', 'Xatolik 2', 'Xatolik 3', 'Xatolik 4'],
-				correctAnswer: 'Xatolik 3',
-				img: 'https://github.com/shadcn.png',
-				type: 'ONE_CHOICE',
-				isCompleted: false,
-			},
-			{
-				question: 'Savol 4: Xatolik qayerda?',
-				correctAnswer: 'Xatolik 4',
-				type: 'INPUT',
-				isCompleted: false,
-			},
-		],
-	})
+	const { id } = useParams()
+	const navigate = useNavigate()
+	const { setData } = useTestStore()
 
+	const [tests, setTests] = useState<QuestionDto[] | null>(null)
+	const [isLoading, setIsLoading] = useState(false)
 	const [progress, setProgress] = useState(100)
 	const [isTimeUp, setIsTimeUp] = useState(false)
 	const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
 	const [selectedAnswer, setSelectedAnswer] = useState<string | string[]>('')
-	const navigate = useNavigate()
-	const duration = 600
+	const [duration, setDuration] = useState(500)
+	const [result, setResult] = useState([])
+
+	const getTests = async () => {
+		setIsLoading(true)
+		try {
+			const { data } = await axiosConfiguration.get<any>(`quiz/start/${id}`)
+			if (data.success) {
+				setTests(data.body.questionDtoList)
+				setDuration(data.body.duration)
+			}
+		} catch (error) {
+			console.error(error)
+			toast.error('Failed to fetch quiz data')
+		} finally {
+			setIsLoading(false)
+		}
+	}
+
+	useEffect(() => {
+		getTests()
+	}, [id])
 
 	useEffect(() => {
 		if (progress > 0) {
 			const interval = setInterval(() => {
 				setProgress(prev => Math.max(prev - 100 / duration, 0))
 			}, 1000)
-
 			return () => clearInterval(interval)
 		} else {
 			setIsTimeUp(true)
 		}
-	}, [progress])
+	}, [progress, duration])
 
 	const remainingTime = Math.ceil((progress / 100) * duration)
 
@@ -90,44 +83,37 @@ const Quiz = () => {
 			toast.warning('Please select an answer before proceeding!')
 			return
 		}
+		if (tests && selectedAnswer) {
+			const optionIds =
+				tests && tests[currentQuestionIndex].optionDtos?.map(item => item.id)
 
-		setTests(prev => ({
-			...prev,
-			questions: prev.questions.map((question, index) =>
-				index === currentQuestionIndex
-					? { ...question, isCompleted: true, answer: selectedAnswer }
-					: question
-			),
-		}))
-
-		if (currentQuestionIndex < tests.questions.length - 1) {
+			setResult((prev): any => [
+				...prev,
+				{
+					questionId: tests[currentQuestionIndex].id,
+					answer: selectedAnswer,
+					optionIds,
+				},
+			])
+		}
+		if (tests) {
 			setCurrentQuestionIndex(currentQuestionIndex + 1)
 			setSelectedAnswer('')
-		} else {
-			navigate('/result')
 		}
 	}
 
 	const goToPreviousQuestion = () => {
 		if (currentQuestionIndex > 0) {
 			setCurrentQuestionIndex(currentQuestionIndex - 1)
-			setSelectedAnswer(tests.questions[currentQuestionIndex - 1].answer || '')
+			setSelectedAnswer('')
 		}
 	}
 
-	const handleMultipleChoice = (option: string) => {
-		setSelectedAnswer(prev => {
-			if (Array.isArray(prev)) {
-				return prev.includes(option)
-					? prev.filter(item => item !== option)
-					: [...prev, option]
-			}
-			return [option]
-		})
-	}
-
 	const renderQuestionInput = () => {
-		const currentQuestion = tests.questions[currentQuestionIndex]
+		if (!tests) return null
+
+		const currentQuestion = tests[currentQuestionIndex]
+		const currentOptions = currentQuestion.optionDtos
 
 		if (currentQuestion.type === 'INPUT') {
 			return (
@@ -139,24 +125,53 @@ const Quiz = () => {
 			)
 		}
 
-		return currentQuestion.options?.map((option, index) => (
-			<Checkbox
-				key={index}
-				type={currentQuestion.type === 'MULTIPLE_CHOICE' ? 'checkbox' : 'radio'}
-				label={option}
-				value={option}
-				checked={
-					Array.isArray(selectedAnswer)
-						? selectedAnswer.includes(option)
-						: selectedAnswer === option
-				}
-				onChange={() =>
-					currentQuestion.type === 'MULTIPLE_CHOICE'
-						? handleMultipleChoice(option)
-						: setSelectedAnswer(option)
-				}
-			/>
-		))
+		return currentOptions.map(
+			(option, index) =>
+				option.answer && (
+					<Checkbox
+						key={index}
+						type={currentQuestion.type === 'MANY_CHOICE' ? 'checkbox' : 'radio'}
+						label={option.answer}
+						value={option.answer}
+						checked={
+							Array.isArray(selectedAnswer)
+								? selectedAnswer.includes(option.answer)
+								: selectedAnswer === option.answer
+						}
+						onChange={() => {
+							if (currentQuestion.type === 'MANY_CHOICE') {
+								setSelectedAnswer((prev): any => {
+									if (Array.isArray(prev)) {
+										return prev.includes(option.answer)
+											? prev.filter(a => a !== option.answer)
+											: [...prev, option.answer]
+									}
+									return [option.answer]
+								})
+							} else {
+								setSelectedAnswer(option.answer)
+							}
+						}}
+					/>
+				)
+		)
+	}
+
+	const sendResult = async () => {
+		try {
+			const { data } = await axiosConfiguration.post(
+				`quiz/pass/${id}?duration=${duration}&countAnswers=${tests?.length}`,
+				result
+			)
+			setData(data.body)
+			navigate('/result')
+		} catch (error) {
+			console.log(error)
+		}
+	}
+
+	if (isLoading) {
+		return <div>Loading...</div>
 	}
 
 	return (
@@ -168,84 +183,92 @@ const Quiz = () => {
 						style={{ width: `${progress}%` }}
 					></div>
 				</div>
-			</div>
 
-			<div className='w-full h-max flex items-center justify-center'>
-				<div className='w-full h-full rounded-2xl bg-white p-8'>
-					<h1 className='text-center text-2xl font-semibold text-red-500 mb-6'>
-						{tests.name}
-					</h1>
-					<p className='text-lg font-medium text-gray-700 mb-4'>
-						Qiyinlik darajasi: <span className='font-bold'>O'rta</span>
-					</p>
-					<p className='text-lg text-center font-medium mb-6'>
-						{tests.questions[currentQuestionIndex].question}
-					</p>
-					{tests.questions[currentQuestionIndex].img && (
-						<div className='w-full flex justify-center my-5'>
-							<img
-								className='w-52 h-52 rounded-lg object-cover'
-								src={tests.questions[currentQuestionIndex].img}
-								alt='Savol rasmi'
-							/>
-						</div>
-					)}
-					<form className='space-y-4'>{renderQuestionInput()}</form>
-					<div className='flex items-center justify-between mt-8'>
-						<p className='text-[#6B7886] text-lg'>
-							Қолган вақт: {remainingTime}s
-						</p>
-						<div className='flex justify-center space-x-4'>
-							<DropdownMenu>
-								<DropdownMenuTrigger asChild>
-									<Button className='bg-red-500 border-none px-20 py-7 hover:bg-red-700 rounded-xl'>
-										{currentQuestionIndex + 1}/{tests.questions.length}
-									</Button>
-								</DropdownMenuTrigger>
-								<DropdownMenuContent className='flex bg-red-500 p-3 rounded-xl'>
-									{tests.questions.map((__, i) => (
-										<DropdownMenuItem key={i}>
-											<Button
-												onClick={() => setCurrentQuestionIndex(i)}
-												className={`${
-													tests.questions[i].isCompleted
-														? 'bg-green-500 text-white'
-														: 'bg-white text-black'
-												} hover:bg-transparent hover:text-black`}
-											>
-												{i + 1}
-											</Button>
-										</DropdownMenuItem>
-									))}
-								</DropdownMenuContent>
-							</DropdownMenu>
-						</div>
-						<div>
-							<Button
-								className='px-5 py-3 bg-[#7E8898] text-white rounded-lg hover:bg-gray-400'
-								onClick={goToPreviousQuestion}
-								disabled={currentQuestionIndex === 0}
-							>
-								Orqaga
-							</Button>
-							<Button
-								className={`px-7 py-3 cursor-pointer ${
-									currentQuestionIndex === tests.questions.length - 1
-										? 'bg-green-500'
-										: 'bg-[#44556A]'
-								} text-white rounded-lg ml-2`}
-								onClick={goToNextQuestion}
-								// disabled={currentQuestionIndex === tests.questions.length - 1}
-							>
-								{currentQuestionIndex === tests.questions.length - 1
-									? 'Yuborish'
-									: 'Keyingisi'}
-							</Button>
+				{tests && (
+					<div className='w-full h-max flex items-center justify-center'>
+						<div className='w-full h-full rounded-2xl bg-white p-8'>
+							<h1 className='text-center text-2xl font-semibold text-red-500 mb-6'>
+								{tests[currentQuestionIndex].name}
+							</h1>
+							<p className='text-lg font-medium text-gray-700 mb-4'>
+								Qiyinlik darajasi:{' '}
+								<span className='font-bold capitalize'>
+									{tests[currentQuestionIndex].difficulty}
+								</span>
+							</p>
+							<p className='text-lg text-center font-medium mb-6'>
+								{tests[currentQuestionIndex].name}
+							</p>
+							{tests[currentQuestionIndex].attachmentIds &&
+								tests[currentQuestionIndex].attachmentIds.map(item => (
+									<div key={item} className='w-full flex justify-center my-5'>
+										<img
+											className='w-52 h-52 rounded-lg object-cover'
+											src={`${BASE_URL}/api/videos/files/${item}`}
+											alt='Savol rasmi'
+										/>
+									</div>
+								))}
 						</div>
 					</div>
-				</div>
+				)}
+				{tests && (
+					<>
+						<form className='space-y-4'>{renderQuestionInput()}</form>
+						<div className='flex items-center justify-between mt-8'>
+							<p className='text-[#6B7886] text-lg'>
+								Қолган вақт: {remainingTime}s
+							</p>
+							<div className='flex justify-center space-x-4'>
+								<DropdownMenu>
+									<DropdownMenuTrigger asChild>
+										<Button className='bg-red-500 border-none px-20 py-7 hover:bg-red-700 rounded-xl'>
+											{currentQuestionIndex + 1}/{tests.length}
+										</Button>
+									</DropdownMenuTrigger>
+									<DropdownMenuContent className='flex bg-red-500 p-3 rounded-xl'>
+										{tests.map((__, i) => (
+											<DropdownMenuItem key={i}>
+												<Button
+													onClick={() => setCurrentQuestionIndex(i)}
+													className='hover:bg-transparent bg-white text-black hover:text-black'
+												>
+													{i + 1}
+												</Button>
+											</DropdownMenuItem>
+										))}
+									</DropdownMenuContent>
+								</DropdownMenu>
+							</div>
+							<div>
+								<Button
+									className='px-5 py-3 bg-[#7E8898] text-white rounded-lg hover:bg-gray-400'
+									onClick={goToPreviousQuestion}
+									disabled={currentQuestionIndex === 0}
+								>
+									Orqaga
+								</Button>
+								<Button
+									className={`px-7 py-3 cursor-pointer ${
+										currentQuestionIndex === tests.length - 1
+											? 'bg-green-500'
+											: 'bg-[#44556A]'
+									} text-white rounded-lg ml-2`}
+									onClick={() =>
+										currentQuestionIndex === tests.length - 1
+											? sendResult()
+											: goToNextQuestion()
+									}
+								>
+									{currentQuestionIndex === tests.length - 1
+										? 'Yuborish'
+										: 'Keyingisi'}
+								</Button>
+							</div>
+						</div>
+					</>
+				)}
 			</div>
-
 			{isTimeUp && (
 				<div className='fixed top-0 left-0 w-full h-full bg-black bg-opacity-75 flex items-center justify-center z-50'>
 					<div className='bg-white rounded-xl p-8 w-[90%] md:w-[50%] lg:w-[40%]'>

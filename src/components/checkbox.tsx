@@ -2,8 +2,8 @@ import React from 'react'
 
 interface CheckboxProps {
 	type: 'radio' | 'checkbox' | 'text'
-	label: string
-	value: string
+	label?: string
+	value?: string
 	checked?: boolean
 	onChange?: (value: string) => void
 }
@@ -15,7 +15,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
 	checked = false,
 	onChange = () => {},
 }) => {
-	const id = `checkbox-${label.replace(/\s+/g, '-').toLowerCase()}`
+	const id = label && `checkbox-${label.replace(/\s+/g, '-').toLowerCase()}`
 
 	return (
 		<label
@@ -31,7 +31,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
 				className='form-radio text-blue-600 w-6 h-6 mr-4'
 				value={value}
 				checked={checked}
-				onChange={() => onChange(value)}
+				onChange={() => value && onChange(value)}
 			/>
 			{label}
 		</label>

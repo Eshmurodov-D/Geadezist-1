@@ -1,4 +1,7 @@
+import useTestStore from '@/store/tets.store'
+
 const ResultPage = () => {
+	const { data } = useTestStore()
 	const results = {
 		name: 'test',
 		surname: 'sdff',
@@ -23,33 +26,33 @@ const ResultPage = () => {
 
 				<div className='border border-gray-300 rounded-lg p-6'>
 					<h2 className='text-center text-2xl font-semibold mb-6'>
-						{results.name}
+						{data?.categoryName}
 					</h2>
 
 					<div className='space-y-4 text-lg'>
 						<div className='flex justify-between border-b pb-2'>
 							<span>Исм:</span>
-							<span>{results.name}</span>
+							<span>{data?.firstName}</span>
 						</div>
 						<div className='flex justify-between border-b pb-2'>
 							<span>Фамилия:</span>
-							<span>{results.surname}</span>
+							<span>{data?.lastName}</span>
 						</div>
 						<div className='flex justify-between border-b pb-2'>
 							<span>Натижа:</span>
-							<span>{results.score}</span>
+							<span>{data?.correctAnswer}</span>
 						</div>
 						<div className='flex justify-between border-b pb-2'>
 							<span>Тўпланган балл:</span>
-							<span>{results.points.toFixed(2)} (балл)</span>
+							<span>{data?.testScore.toFixed(2)} (балл)</span>
 						</div>
 						<div className='flex justify-between border-b pb-2'>
 							<span>Ишлашга кетган вақт:</span>
-							<span>{results.timeSpent}</span>
+							<span>{data?.duration}</span>
 						</div>
 						<div className='flex justify-between border-b pb-2'>
 							<span>Ишланган сана:</span>
-							<span>{results.date}</span>
+							<span>{data?.createdAt}</span>
 						</div>
 					</div>
 				</div>
