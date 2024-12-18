@@ -1,44 +1,157 @@
-import { Link } from 'react-router-dom'
+'use client'
 
-function Testlar() {
+import { QuestionCard } from '@/components/question-card'
+import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
+import {
+	Pagination,
+	PaginationContent,
+	PaginationItem,
+} from '@/components/ui/pagination'
+import { BASE_URL } from '@/services/api'
+import axiosConfiguration from '@/services/axios'
+import { QuestionType } from '@/types/test'
+import { ChevronLeft, ChevronRight, Loader } from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
+import { toast } from 'sonner'
+
+const PAGE_SIZE = 10
+
+export default function Testlar() {
+	const [imageModal, setImageModal] = useState({
+		isOpen: false,
+		imageId: null as number | null,
+	})
+	const [questions, setQuestions] = useState<QuestionType[]>([])
+	const [isLoading, setIsLoading] = useState(false)
+	const [totalPages, setTotalPages] = useState(0)
+	const [currentPage, setCurrentPage] = useState(0)
+
+	const getQuestions = useCallback(async () => {
+		setIsLoading(true)
+		try {
+			const { data } = await axiosConfiguration.get<any>(
+				`/category?page=${currentPage}&size=${PAGE_SIZE}`
+			)
+			if (data.success) {
+				setQuestions(data.body.body)
+				setTotalPages(data.body.totalPage)
+			} else {
+				toast.error('Failed to fetch questions')
+			}
+		} catch (error) {
+			console.error('Error fetching questions:', error)
+			toast.error('An error occurred while fetching questions')
+		} finally {
+			setIsLoading(false)
+		}
+	}, [currentPage])
+
+	useEffect(() => {
+		getQuestions()
+	}, [getQuestions])
+
+	const handleImageClick = useCallback((imageId: number) => {
+		setImageModal({ isOpen: true, imageId })
+	}, [])
+
+	const handleCloseModal = useCallback(() => {
+		setImageModal({ isOpen: false, imageId: null })
+	}, [])
+
+	const handlePageChange = useCallback((page: number) => {
+		setCurrentPage(page)
+		window.scrollTo({ top: 0, behavior: 'smooth' })
+	}, [])
+
 	return (
-		<>
-			<h1 className='text-center text-3xl mt-5  font-bold text-red-500'>
+		<div className='container mx-auto px-4 py-8'>
+			<h1 className='text-center text-3xl mb-8 font-bold text-red-500'>
 				Йўналишлар
 			</h1>
-			<a
-				href='#'
-				className='flex m-6 px-5 flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row  hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700'
-			>
-				<img
-					className='object-cover w-full rounded-t-lg h-96 md:h-auto md:w-[20%] md:rounded-none md:rounded-s-lg'
-					src='https://www.shutterstock.com/image-vector/vector-line-icon-img-260nw-2050481219.jpg'
-					alt=''
-				/>
-				<div className='flex flex-row justify-between w-full p-4 leading-normal'>
-					<div>
-						<h1 className='mt-2 font-medium text-[#44556A]'>Йўналиш:</h1>
-						<h1 className='mt-2 font-medium text-[#44556A]'>
-							Тест ишлашга ажратилган вақт:
-						</h1>
-						<h1 className='mt-2 font-medium text-[#44556A]'>Саволлар сони:</h1>
-						<h1 className='mt-2 font-medium text-[#44556A]'>
-							Қайта топшириш вақти:
-						</h1>
-					</div>
-					<div className='flex flex-col items-end'>
-						<h1 className='mt-2 font-medium text-[#44556A]'>test</h1>
-						<h1 className='mt-2 font-medium text-[#44556A]'>10 (дақ)</h1>
-						<h1 className='mt-2 font-medium text-[#44556A]'>5 та</h1>
-						<h1 className='mt-2 font-medium text-[#44556A]'>О кундан кейин</h1>
-						<button className='px-5 rounded-lg py-2 mt-2 bg-[#44556A] font-medium text-white'>
-							<Link to={'/tests'}>Бошлаш</Link>
-						</button>
-					</div>
+
+			{isLoading ? (
+				<div className='flex justify-center items-center min-h-[200px]'>
+					<Loader className='w-8 h-8 animate-spin text-primary' />
 				</div>
-			</a>
-		</>
+			) : (
+				<div className='space-y-6'>
+					{questions.length > 0 ? (
+						questions.map(question => (
+							<QuestionCard
+								key={question.id}
+								question={question}
+								onImageClick={handleImageClick}
+							/>
+						))
+					) : (
+						<div className='text-center py-8 text-gray-500'>
+							No questions found
+						</div>
+					)}
+				</div>
+			)}
+
+			{totalPages > 1 && (
+				<div className='mt-8 flex justify-start w-full'>
+					<Pagination>
+						<PaginationContent>
+							<PaginationItem>
+								<Button
+									variant='outline'
+									size='icon'
+									disabled={currentPage === 0}
+									onClick={() => handlePageChange(currentPage - 1)}
+									aria-label='Previous page'
+								>
+									<ChevronLeft className='h-4 w-4' />
+								</Button>
+							</PaginationItem>
+
+							{Array.from({ length: totalPages }).map((_, index) => (
+								<PaginationItem key={index}>
+									<Button
+										variant={currentPage === index ? 'default' : 'outline'}
+										onClick={() => handlePageChange(index)}
+										aria-label={`Page ${index + 1}`}
+										aria-current={currentPage === index ? 'page' : undefined}
+									>
+										{index + 1}
+									</Button>
+								</PaginationItem>
+							))}
+
+							<PaginationItem>
+								<Button
+									variant='outline'
+									size='icon'
+									disabled={currentPage === totalPages - 1}
+									onClick={() => handlePageChange(currentPage + 1)}
+									aria-label='Next page'
+								>
+									<ChevronRight className='h-4 w-4' />
+								</Button>
+							</PaginationItem>
+						</PaginationContent>
+					</Pagination>
+				</div>
+			)}
+
+			<Dialog open={imageModal.isOpen} onOpenChange={handleCloseModal}>
+				<DialogContent className='sm:max-w-[800px]'>
+					<div className='relative w-full aspect-video'>
+						<img
+							src={
+								imageModal.imageId
+									? `${BASE_URL}/api/videos/files/${imageModal.imageId}`
+									: ''
+							}
+							alt='Question attachment'
+							className='w-full h-full object-contain'
+						/>
+					</div>
+				</DialogContent>
+			</Dialog>
+		</div>
 	)
 }
-
-export default Testlar

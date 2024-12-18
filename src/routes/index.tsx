@@ -1,4 +1,6 @@
 // import Quiz from '@/pages/Test/quiz'
+import ResultPage from '@/pages/Test/result'
+import Results from '@/pages/Test/Results'
 import React from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import AdminLayout from '../Layout/AdminLayout'
