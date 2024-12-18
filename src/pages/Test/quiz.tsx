@@ -12,7 +12,7 @@ import axiosConfiguration from '@/services/axios'
 import useTestStore from '@/store/tets.store'
 import { OptionType } from '@/types/test'
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 
 interface QuestionDto {
@@ -156,7 +156,7 @@ const Quiz = () => {
 				)
 		)
 	}
-
+	
 	const sendResult = async () => {
 		try {
 			const { data } = await axiosConfiguration.post(
@@ -227,11 +227,11 @@ const Quiz = () => {
 										</Button>
 									</DropdownMenuTrigger>
 									<DropdownMenuContent className='flex bg-red-500 p-3 rounded-xl'>
-										{tests.map((__, i) => (
+										{tests.map((item, i) => (
 											<DropdownMenuItem key={i}>
 												<Button
 													onClick={() => setCurrentQuestionIndex(i)}
-													className='hover:bg-transparent bg-white text-black hover:text-black'
+													className={`${result.some(r => r.questionId === item.id) ? 'bg-green-500 text-white' : 'bg-white text-black'} hover:bg-transparent hover:text-black`}
 												>
 													{i + 1}
 												</Button>
@@ -279,8 +279,8 @@ const Quiz = () => {
 							Тест вақти тугади. Илтимос, натижаларни текширинг.
 						</p>
 						<div className='flex justify-center'>
-							<Button className='px-7 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-lg'>
-								<Link to='/results'>Натижаларни кўриш</Link>
+							<Button onClick={sendResult} className='px-7 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-lg'>
+								<Link to='/result'>Натижаларни кўриш</Link>
 							</Button>
 						</div>
 					</div>

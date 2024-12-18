@@ -40,7 +40,7 @@ const ResultPage = () => {
 						</div>
 						<div className='flex justify-between border-b pb-2'>
 							<span>Натижа:</span>
-							<span>{data?.correctAnswer}</span>
+							<span>{data?.correctAnswer}/{data?.countAnswer}</span>
 						</div>
 						<div className='flex justify-between border-b pb-2'>
 							<span>Тўпланган балл:</span>

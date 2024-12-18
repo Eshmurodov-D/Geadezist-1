@@ -93,7 +93,7 @@ export default function Testlar() {
 			)}
 
 			{totalPages > 1 && (
-				<div className='mt-8 flex justify-center'>
+				<div className='mt-8 flex justify-start w-full'>
 					<Pagination>
 						<PaginationContent>
 							<PaginationItem>
