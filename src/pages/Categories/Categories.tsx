@@ -4,6 +4,19 @@ import Button from "../../components/Button";
 import Modal from "../../components/modal";
 import Input from "../../components/input";
 import { PiPlusCircleLight } from "react-icons/pi";
+import { Link } from "react-router-dom";
+
+interface Categories {
+  id: number;
+  fullName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  position: string;
+  role: string; // Toifa
+  isActive: boolean;
+}
+
 
 const Categories: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -11,6 +24,8 @@ const Categories: React.FC = () => {
     fullName: "",
     category: "",
     status: "",
+    role: "",
+    
   });
 
   const [tableData, setTableData] = useState([
@@ -53,7 +68,7 @@ const Categories: React.FC = () => {
     ]);
 
     setIsModalOpen(false);
-    setFormData({ fullName: "", category: "", status: "" });
+    setFormData({ fullName: "", category: "", status: "",role:"",});
   };
 
   const tableColumns = [
@@ -75,16 +90,21 @@ const Categories: React.FC = () => {
     <div className="max-w-full md:max-w-6xl mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Категория</h1>
-        <div className="text-sm text-gray-500 mt-2 md:mt-0">
-          <span className="font-medium text-gray-700">Бошқарув панели</span> /{" "}
-          <span className="text-blue-600 font-medium">Категория</span>
-        </div>
+
+    <div className="text-sm text-gray-500 mt-2 md:mt-0">
+      <span className="font-medium text-gray-700">
+      <Link to="/dashboard">Бошқарув панели</Link>
+     </span>{" "}
+         /{" "}
+     <span className="text-blue-600 font-medium">Категория</span>
+    </div>
+
       </div>
 
       <div className="flex justify-between items-center mb-4">
         <Button
           onClick={() => setIsModalOpen(true)}
-          variant="primary"
+          variant="secondary"
           size="medium"
           style={{
             display: "flex",
@@ -103,38 +123,74 @@ const Categories: React.FC = () => {
 
       <Table data={tableData} columns={tableColumns} className="mb-8" />
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Foydalanuvchi ma'lumotlari">
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="">
         <form onSubmit={handleSubmit}>
           <Input
             label="Rasm yuklash"
             type="file"
             name="image"
           />
+             <div className="mb-4">
+            <label className="block text-gray-700">Админ тоифасини танланг</label>
+            <select
+              name="role"
+              className="w-full border border-gray-300 rounded p-2"
+              onChange={handleChange}
+              value={formData.role}
+            >
+              <option value="">Асосий булмаган категория</option>
+              <option value="superadmin">Асосий категория</option>
+              <option value="admin">Категория турини танланг</option>
+            </select>
+          </div>
           <Input
-            label="F.I.O"
+            label="категория номе"
             type="text"
             name="fullName"
             value={formData.fullName}
             onChange={handleChange}
-            placeholder="F.I.O kiriting"
+            placeholder="kategoriya nomini kiriting"
           />
           <Input
-            type="select"
-            label="Kategoriya"
-            name="category"
-            value={formData.category}
+            label="Tavsif"
+            type="text"
+            name="fullName"
+            value={formData.fullName}
             onChange={handleChange}
-            options={categories}
+            placeholder="Tavsif kiriting"
           />
           <Input
-            type="select"
-            label="Status"
-            name="status"
-            value={formData.status}
+            label="Umumiy savollar soni"
+            type="text"
+            name="fullName"
+            value={formData.fullName}
             onChange={handleChange}
-            options={statuses}
+            placeholder="Umumiy savollar sonini kiriting"
           />
-
+          <Input
+            label="Qushimcha savollar soni"
+            type="text"
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleChange}
+            placeholder="Qushimcha savollar sonini kiriting"
+          />
+          <Input
+            label="Davomiylik vaqti (M)"
+            type="number"
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleChange}
+            placeholder="Davomiylik vaqtini kiriting (M)"
+          />
+           <Input
+            label="Qayta qabul qilish sanasi"
+            type="number"
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleChange}
+            placeholder="Qayta qabul qilish sanasini kiriting"
+          />
           <div className="mt-4 flex justify-end">
             <Button type="submit" variant="primary">
               Saqlash
