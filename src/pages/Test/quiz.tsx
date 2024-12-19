@@ -13,7 +13,7 @@ import useTestStore from '@/store/tets.store'
 import { OptionType } from '@/types/test'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { toast } from 'sonner'
+// import { toast } from 'sonner'
 
 interface QuestionDto {
 	id: number
@@ -52,7 +52,7 @@ const Quiz = () => {
 			}
 		} catch (error) {
 			console.error(error)
-			toast.error('Failed to fetch quiz data')
+			// toast.error('Failed to fetch quiz data')
 		} finally {
 			setIsLoading(false)
 		}

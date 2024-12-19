@@ -13,7 +13,7 @@ import axiosConfiguration from '@/services/axios'
 import { QuestionType } from '@/types/test'
 import { ChevronLeft, ChevronRight, Loader } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
-import { toast } from 'sonner'
+// import { toast } from 'sonner'
 
 const PAGE_SIZE = 10
 
@@ -37,11 +37,11 @@ export default function Testlar() {
 				setQuestions(data.body.body)
 				setTotalPages(data.body.totalPage)
 			} else {
-				toast.error('Failed to fetch questions')
+				// toast.error('Failed to fetch questions')
 			}
 		} catch (error) {
 			console.error('Error fetching questions:', error)
-			toast.error('An error occurred while fetching questions')
+			// toast.error('An error occurred while fetching questions')
 		} finally {
 			setIsLoading(false)
 		}

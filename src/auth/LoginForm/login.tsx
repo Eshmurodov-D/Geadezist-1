@@ -40,32 +40,35 @@ function Login() {
       });
 
       if (response.data && response.data.token && response.data.role) {
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("role", response.data.role);
+        console.log("Login muvaffaqiyatli:", response.data); // Qo'shilgan log
+        sessionStorage.setItem("token", response.data.token);
+        sessionStorage.setItem("role", response.data.role);
         toast.success("Siz muvaffaqiyatli tizimga kirdingiz!", {
           position: "top-center",
           autoClose: 2000,
         });
-
+      
         switch (response.data.role) {
           case "ROLE_ADMIN":
             navigate("/admin-dashboard");
             break;
           case "ROLE_SUPER_ADMIN":
-            navigate("/superadmin-dashboard");
+            navigate("/dashboard");
             break;
           case "ROLE_TESTER":
-            navigate("/tester-dashboard");
+            navigate("/categories");
             break;
-          case "ROLE_USER":
-            navigate("/user-dashboard");
+          case "ROLE_CLIENT":
+            navigate("/test");
             break;
           default:
-            navigate("/dashboard");
+            console.log("Noma'lum rol:", response.data.role); // Qo'shilgan log
+            navigate("/login");
         }
       } else {
         setError("Email yoki parol noto'g'ri.");
       }
+      
     } catch (error) {
       console.error(error);
       setError("Tizimda xatolik yuz berdi, iltimos qayta urinib ko'ring.");

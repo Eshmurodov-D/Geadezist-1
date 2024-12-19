@@ -1,13 +1,13 @@
 // import create from "zustand";
 
 import { create } from "zustand";
-import { AuthState, User } from "../types/roles";
+import { AuthState, Role } from "../types/roles";
 
 const useAuthStore = create<AuthState>((set) => ({
-  user: null,  // Boshlang‘ich holat null
-  login: (user: User) => set({ user }), 
+  role: null,  // Boshlang‘ich holat null
+  login: (role: Role) => set({ role }), 
   // Login qilish
-  logout: () => set({ user: null }), // Logout qilish
+  logout: () => set({ role: null }), // Logout qilish
 }));
 
 export default useAuthStore;
