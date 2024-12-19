@@ -1,34 +1,31 @@
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import useAuthStore from '../store/useAuthStore'
 
 const Sidebar: React.FC = () => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false) // Mobil versiyada sidebarni boshqarish
-	const { user } = useAuthStore()
 	const location = useLocation() // Hozirgi yo'nalishni olish
-
-	// Menyu elementlari (rol asosida ko'rinadigan)
+	const role = localStorage.getItem('role')
 	const menuItems = [
-		{ name: 'Бошқарув панели', path: '/dashboard', roles: ['superadmin'] },
+		{ name: 'Бошқарув панели', path: '/dashboard', roles: ['ROLE_SUPER_ADMIN'] },
 		{
 			name: 'Категория',
 			path: '/categories',
-			roles: ['superadmin', 'testadmin'],
+			roles: ['ROLE_SUPER_ADMIN', 'ROLE_TESTER'],
 		},
 		{
 			name: 'Тест',
 			path: '/test',
-			roles: ['superadmin', 'testadmin', 'client'],
+			roles: ['ROLE_SUPER_ADMIN', 'ROLE_TESTER', 'ROLE_CLIENT'],
 		},
-		{ name: 'Фойдаланувчилар', path: '/users', roles: ['superadmin'] },
+		{ name: 'Фойдаланувчилар', path: '/users', roles: ['ROLE_SUPER_ADMIN'] },
 		{
 			name: 'Фойдаланувчилар натижаси',
 			path: '/user-results',
-			roles: ['superadmin', 'admin'],
+			roles: ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN'],
 		},
-		{ name: 'Ходимлар', path: '/employees', roles: ['superadmin'] },
-		{ name: 'Манзил', path: '/addresses', roles: ['superadmin'] },
-		{ name: 'Натижалар булими', path: '/results', roles: ['client'] },
+		{ name: 'Ходимлар', path: '/employees', roles: ['ROLE_SUPER_ADMIN'] },
+		{ name: 'Манзил', path: '/addresses', roles: ['ROLE_SUPER_ADMIN'] },
+		{ name: 'Натижалар булими', path: '/results', roles: ['ROLE_CLIENT'] },
 	]
 	// Sidebarni ochish-yopish funksiyasi
 	const toggleSidebar = () => {
@@ -37,7 +34,7 @@ const Sidebar: React.FC = () => {
 	return (
 		<div>
 			{/* Sidebar faqat `admin` bo'lmagan foydalanuvchilar uchun ko'rsatiladi */}
-			{user?.role !== 'admin' && (
+			{role !== 'ROLE_ADMIN	' && (
 				<div className='relative'>
 					{/* Mobil uchun hamburger tugmasi */}
 					<button className='lg:hidden p-4 text-black' onClick={toggleSidebar}>
@@ -61,7 +58,7 @@ const Sidebar: React.FC = () => {
 						{/* Menyu elementlari */}
 						<ul className='p-4 flex flex-col w-full bg-white gap-y-5 mt-20'>
 							{menuItems
-								.filter(item => item.roles.includes(user?.role || ''))
+								.filter(item => item.roles.includes(role || ''))
 								.map(item => (
 									<li key={item.name}>
 										<Link

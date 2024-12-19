@@ -7,5 +7,6 @@ export interface User {
 export interface AuthState {
 	user: User | null
 	login: (user: User) => void
+	getMe: () => void
 	logout: () => void
 }

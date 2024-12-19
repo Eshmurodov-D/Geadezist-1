@@ -1,18 +1,18 @@
-import React from 'react';
+import React from "react";
 
 interface Column {
   key: string;
   title: string;
   render?: (value: any, record: any) => React.ReactNode;
 }
-   
+
 interface TableProps {
   data: any[];
   columns: Column[];
   className?: string;
 }
 
-const Table: React.FC<TableProps> = ({ data, columns, className = '' }) => {
+const Table: React.FC<TableProps> = ({ data, columns, className = "" }) => {
   return (
     <div className={`overflow-x-auto ${className}`}>
       <table className="min-w-full divide-y divide-gray-200">
@@ -35,7 +35,12 @@ const Table: React.FC<TableProps> = ({ data, columns, className = '' }) => {
               {columns.map((column) => (
                 <td key={column.key} className="px-6 py-4 whitespace-nowrap">
                   {column.render
-                    ? column.render(record[column.key], record)
+                    ? column.render(
+                        record[column.key] === "id"
+                          ? index + 1
+                          : record[column.key],
+                        record
+                      )
                     : record[column.key]}
                 </td>
               ))}
@@ -48,4 +53,3 @@ const Table: React.FC<TableProps> = ({ data, columns, className = '' }) => {
 };
 
 export default Table;
-
