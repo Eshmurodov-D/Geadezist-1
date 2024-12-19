@@ -34,10 +34,13 @@ function Login() {
     }
     setIsLoading(true);
     try {
-      const response = await axios.post("http://142.93.106.195:9090/auth/login", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "http://142.93.106.195:9090/auth/login",
+        {
+          email,
+          password,
+        }
+      );
 
       if (response.data && response.data.token && response.data.role) {
         console.log("Login muvaffaqiyatli:", response.data); // Qo'shilgan log
@@ -50,20 +53,22 @@ function Login() {
       
         switch (response.data.role) {
           case "ROLE_ADMIN":
-            navigate("/admin-dashboard");
+            window.location.pathname = "/admin-dashboard";
             break;
           case "ROLE_SUPER_ADMIN":
-            navigate("/dashboard");
+            window.location.pathname = "/dashboard";
             break;
           case "ROLE_TESTER":
-            navigate("/categories");
+            window.location.pathname = "/tester-dashboard";
+            break;
+          case "ROLE_USER":
+            window.location.pathname = "/user-dashboard";
             break;
           case "ROLE_CLIENT":
-            navigate("/test");
+            window.location.pathname = "/test";
             break;
           default:
-            console.log("Noma'lum rol:", response.data.role); // Qo'shilgan log
-            navigate("/login");
+            window.location.pathname = "/dashboard";
         }
       } else {
         setError("Email yoki parol noto'g'ri.");
@@ -77,7 +82,8 @@ function Login() {
     }
   };
 
-  const isLoginButtonDisabled = !(email && password) || !!error || !!emailError || isLoading;
+  const isLoginButtonDisabled =
+    !(email && password) || !!error || !!emailError || isLoading;
 
   return (
     <Grid
@@ -126,7 +132,13 @@ function Login() {
             borderRadius: 2,
           }}
         >
-          <Typography variant="h5" fontSize="36px" align="center" fontWeight="bold" gutterBottom>
+          <Typography
+            variant="h5"
+            fontSize="36px"
+            align="center"
+            fontWeight="bold"
+            gutterBottom
+          >
             Тизимга кириш
           </Typography>
 
@@ -139,7 +151,7 @@ function Login() {
             error={!!emailError}
             helperText={emailError}
             margin="normal"
-            sx={{ fontSize: '16px' }}
+            sx={{ fontSize: "16px" }}
           />
 
           <TextField
@@ -152,7 +164,7 @@ function Login() {
             error={!!error}
             helperText={error}
             margin="normal"
-            sx={{ fontSize: '16px' }}
+            sx={{ fontSize: "16px" }}
           />
 
           <Button
@@ -164,9 +176,9 @@ function Login() {
             disabled={isLoginButtonDisabled}
             sx={{
               marginTop: 3,
-              fontSize: '16px',
+              fontSize: "16px",
               backgroundColor: "#5213e7",
-              '&:hover': {
+              "&:hover": {
                 backgroundColor: "#3701b1",
               },
             }}
@@ -180,10 +192,10 @@ function Login() {
               color="primary"
               onClick={handleRegisterNavigation}
               sx={{
-                fontSize: '12px',
+                fontSize: "12px",
                 color: "#5213e7",
                 textTransform: "none",
-                '&:hover': {
+                "&:hover": {
                   color: "#3701b1",
                 },
               }}
@@ -195,10 +207,10 @@ function Login() {
               color="secondary"
               onClick={() => navigate("/changepass")}
               sx={{
-                fontSize: '12px',
+                fontSize: "12px",
                 color: "#5213e7",
                 textTransform: "none",
-                '&:hover': {
+                "&:hover": {
                   color: "#3701b1",
                 },
               }}
