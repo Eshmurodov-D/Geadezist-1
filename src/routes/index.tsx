@@ -13,7 +13,7 @@ import Register from '@/auth/RegisterForm/register';
 import ForgotPassword from '@/auth/PasswordPage/ForgetPassword/forget';
 import ResetPassword from '@/auth/PasswordPage/ResetPassword/reset';
 import VerifyCode from '@/auth/VerifyCode/VerifyfCode';
-import NotFound from '@/pages/notFound';
+// import NotFound from '@/pages/notFound';
 // import Distric from '@/pages/Addresses/distric';
 
 const AppRoutes: React.FC = () => {
@@ -49,7 +49,7 @@ if(!role) navigate('/login')
       <Route path='/changepass' element={<ForgotPassword />} />
       <Route path='/reset-password' element={<ResetPassword />} />
       <Route path='/verfy-code' element={<VerifyCode />} />
-      <Route path='/*' element={<NotFound />} />
+      {/* <Route path='/*' element={<NotFound />} /> */}
 
       <Route path='/login' element={role ? <Navigate to={getDefaultRedirectPath()} /> : <Login />} />
       {/* <Route path='/distric' element={<Distric />} /> */}
