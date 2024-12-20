@@ -1,12 +1,18 @@
 // import React from 'react'
-// import Region from './distric'
-// import District from './region'
+
+// import AddDistrict from "./distric"
+import District from "./distric"
+import Region from "./region"
+
 
 function Addresses() {
   return (
     <div>
-      {/* <Region/>
-      <District/> */}
+
+      <Region/>
+      {/* <AddDistrict/> */}
+      <District/>
+
     </div>
   )
 }

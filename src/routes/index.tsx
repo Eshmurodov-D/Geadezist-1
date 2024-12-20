@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import AdminLayout from '../Layout/AdminLayout';
 import Addresses from '../pages/Addresses/Addresses';
 import Categories from '../pages/Categories/Categories';
@@ -8,17 +8,18 @@ import Employees from '../pages/Employees/Employees';
 import Test from '../pages/Test/Test';
 import UserResults from '../pages/User-results/UserResults';
 import Users from '../pages/Users/Users';
-import Quiz from '../pages/Test/quiz';
 import Login from '@/auth/LoginForm/login';
 import Register from '@/auth/RegisterForm/register';
 import ForgotPassword from '@/auth/PasswordPage/ForgetPassword/forget';
 import ResetPassword from '@/auth/PasswordPage/ResetPassword/reset';
 import VerifyCode from '@/auth/VerifyCode/VerifyfCode';
+import NotFound from '@/pages/notFound';
+// import Distric from '@/pages/Addresses/distric';
 
 const AppRoutes: React.FC = () => {
-	//  beddn role ni olb pasda tekshrlgn role lani
-  const role = sessionStorage.getItem('role');
-
+  const role = localStorage.getItem('role');
+  const navigate = useNavigate()
+if(!role) navigate('/login')
   const getDefaultRedirectPath = () => {
     switch (role) {
       case 'ROLE_TESTER':
@@ -28,7 +29,7 @@ const AppRoutes: React.FC = () => {
       case 'ROLE_SUPER_ADMIN':
         return '/dashboard';
       case 'ROLE_CLIENT':
-        return '/test';
+        return '/result';
       default:
         return '/login';
     }
@@ -44,16 +45,14 @@ const AppRoutes: React.FC = () => {
 
   return (
     <Routes>
-      <Route path='/ROLE_TESTER' element={<Quiz />} />
       <Route path='/register' element={<Register />} />
       <Route path='/changepass' element={<ForgotPassword />} />
       <Route path='/reset-password' element={<ResetPassword />} />
       <Route path='/verfy-code' element={<VerifyCode />} />
+      <Route path='/*' element={<NotFound />} />
 
-      <Route
-        path='/login'
-        element={role ? <Navigate to={getDefaultRedirectPath()} /> : <Login />}
-      />
+      <Route path='/login' element={role ? <Navigate to={getDefaultRedirectPath()} /> : <Login />} />
+      {/* <Route path='/distric' element={<Distric />} /> */}
 
       <Route path='/' element={role ? <AdminLayout /> : <Navigate to='/login' />}>
         <Route path='dashboard' element={<Dashboard />} />
