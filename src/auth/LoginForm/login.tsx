@@ -35,10 +35,13 @@ function Login() {
 
     setIsLoading(true);
     try {
-      const response = await axios.post("http://142.93.106.195:9090/auth/login", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "http://142.93.106.195:9090/auth/login",
+        {
+          email,
+          password,
+        }
+      );
 
       if (response.data && response.data.token && response.data.role) {
         localStorage.setItem("token", response.data.token);
@@ -47,8 +50,31 @@ function Login() {
           position: "top-center",
           autoClose: 2000,
         });
+<<<<<<< HEAD
         setResData(response.data); // API javobini saqlash
 
+=======
+      
+        switch (response.data.role) {
+          case "ROLE_ADMIN":
+            window.location.pathname = "/admin-dashboard";
+            break;
+          case "ROLE_SUPER_ADMIN":
+            window.location.pathname = "/dashboard";
+            break;
+          case "ROLE_TESTER":
+            window.location.pathname = "/tester-dashboard";
+            break;
+          case "ROLE_USER":
+            window.location.pathname = "/user-dashboard";
+            break;
+          case "ROLE_CLIENT":
+            window.location.pathname = "/test";
+            break;
+          default:
+            window.location.pathname = "/dashboard";
+        }
+>>>>>>> 2c0f700293039d8b962f2b91c4adfff6ff909f4d
       } else {
         setError("Email yoki parol noto'g'ri.");
       }
@@ -61,6 +87,7 @@ function Login() {
     }
   };
 
+<<<<<<< HEAD
   // useEffect faqat resData o'zgarganda ishga tushadi
   useEffect(() => {
     if (resData) {
@@ -78,6 +105,10 @@ function Login() {
   }, [resData]); // resData o'zgarganda faqat ishlaydi
 
   const isLoginButtonDisabled = !(email && password) || !!error || !!emailError || isLoading;
+=======
+  const isLoginButtonDisabled =
+    !(email && password) || !!error || !!emailError || isLoading;
+>>>>>>> 2c0f700293039d8b962f2b91c4adfff6ff909f4d
 
   return (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", backgroundColor: "#fff", padding: 0, margin: 0 }}>
@@ -86,6 +117,7 @@ function Login() {
           Тизимга кириш
         </h2>
 
+<<<<<<< HEAD
         <div style={{ marginBottom: "15px" }}>
           <label htmlFor="email" style={{ fontSize: "16px" }}>Електрон почта</label>
           <input
@@ -100,6 +132,49 @@ function Login() {
               marginTop: "5px",
               border: emailError ? "2px solid red" : "1px solid #ccc",
             }}
+=======
+      <Grid
+        item
+        xs={12}
+        md={6}
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        sx={{
+          bgcolor: "white",
+          height: "100vh",
+          padding: 4,
+        }}
+      >
+        <Box
+          sx={{
+            maxWidth: 550,
+            width: "100%",
+            padding: 6,
+            borderRadius: 2,
+          }}
+        >
+          <Typography
+            variant="h5"
+            fontSize="36px"
+            align="center"
+            fontWeight="bold"
+            gutterBottom
+          >
+            Тизимга кириш
+          </Typography>
+
+          <TextField
+            label="Електрон почта"
+            variant="outlined"
+            fullWidth
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            error={!!emailError}
+            helperText={emailError}
+            margin="normal"
+            sx={{ fontSize: "16px" }}
+>>>>>>> 2c0f700293039d8b962f2b91c4adfff6ff909f4d
           />
           {emailError && <small style={{ color: "red", fontSize: "12px" }}>{emailError}</small>}
         </div>
@@ -111,17 +186,41 @@ function Login() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+<<<<<<< HEAD
             style={{
               width: "100%",
               padding: "10px",
               fontSize: "16px",
               marginTop: "5px",
               border: error ? "2px solid red" : "1px solid #ccc",
+=======
+            error={!!error}
+            helperText={error}
+            margin="normal"
+            sx={{ fontSize: "16px" }}
+          />
+
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            onClick={handleSubmit}
+            fullWidth
+            disabled={isLoginButtonDisabled}
+            sx={{
+              marginTop: 3,
+              fontSize: "16px",
+              backgroundColor: "#5213e7",
+              "&:hover": {
+                backgroundColor: "#3701b1",
+              },
+>>>>>>> 2c0f700293039d8b962f2b91c4adfff6ff909f4d
             }}
           />
           {error && <small style={{ color: "red", fontSize: "12px" }}>{error}</small>}
         </div>
 
+<<<<<<< HEAD
         <button
           onClick={handleSubmit}
           disabled={isLoginButtonDisabled}
@@ -154,6 +253,42 @@ function Login() {
           </button>
         </div>
       </div>
+=======
+          <Box display="flex" justifyContent="space-between" mt={3}>
+            <Button
+              variant="text"
+              color="primary"
+              onClick={handleRegisterNavigation}
+              sx={{
+                fontSize: "12px",
+                color: "#5213e7",
+                textTransform: "none",
+                "&:hover": {
+                  color: "#3701b1",
+                },
+              }}
+            >
+              Рўйхатдан ўтиш
+            </Button>
+            <Button
+              variant="text"
+              color="secondary"
+              onClick={() => navigate("/changepass")}
+              sx={{
+                fontSize: "12px",
+                color: "#5213e7",
+                textTransform: "none",
+                "&:hover": {
+                  color: "#3701b1",
+                },
+              }}
+            >
+              Паролни унутдингизми?
+            </Button>
+          </Box>
+        </Box>
+      </Grid>
+>>>>>>> 2c0f700293039d8b962f2b91c4adfff6ff909f4d
 
       <ToastContainer />
     </div>

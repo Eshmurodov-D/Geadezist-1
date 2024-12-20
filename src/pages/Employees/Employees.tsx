@@ -3,6 +3,7 @@ import Table from "../../components/Table/Table";
 import Button from "../../components/Button";
 import Modal from "../../components/modal";
 import Input from "../../components/input";
+import axiosConfiguration from "@/services/axios";
 
 // API'dan keladigan foydalanuvchi ma'lumotlari uchun interfeys
 interface UserData {
@@ -38,23 +39,18 @@ const Employees: React.FC = () => {
     confirmPassword: "",
   });
 
+  const getEmployees = async () => {
+    try {
+      const { data } = await axiosConfiguration.get("/user?page=0&size=10");
+      setEmployees(data.body.body);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   // API'dan ma'lumot olish
   useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/users")
-      .then((res) => res.json())
-      .then((data: UserData[]) => {
-        const transformedData: Employee[] = data.map((user) => ({
-          id: user.id,
-          fullName: user.name.split(" ")[0],
-          lastName: user.name.split(" ")[1] || "",
-          email: user.email,
-          phone: user.phone || "Noma'lum",
-          position: "Tashqi foydalanuvchi",
-          role: "admin",
-          isActive: true,
-        }));
-        setEmployees(transformedData);
-      });
+    getEmployees();
   }, []);
 
   const handleChange = (
@@ -140,13 +136,15 @@ const Employees: React.FC = () => {
           setEmployees(updatedEmployees);
           localStorage.setItem("employees", JSON.stringify(updatedEmployees));
         })
-        .catch((err) => console.error("Faol holatini o'zgartirishda xato:", err));
+        .catch((err) =>
+          console.error("Faol holatini o'zgartirishda xato:", err)
+        );
     }
   };
 
   const tableColumns = [
     { key: "id", title: "T/P" },
-    { key: "fullName", title: "Исм" },
+    { key: "firstName", title: "Исм" },
     { key: "lastName", title: "Фамилия" },
     { key: "email", title: "Электрон почта" },
     { key: "position", title: "Лавозими" },
@@ -155,11 +153,11 @@ const Employees: React.FC = () => {
       title: "Активлиги",
       render: (row: Employee) => (
         <Button
-          variant={row.isActive ? 'danger' : "danger"}
+          // variant={row.isActive ? "danger" : "danger"}
           size="small"
           onClick={() => toggleActive(row.id)}
         >
-          {row.isActive ? "Faol" : "Nofaol"}
+          {/* {row.isActive ? "Faol" : "Nofaol"} */}
         </Button>
       ),
     },
@@ -202,7 +200,9 @@ const Employees: React.FC = () => {
         <form onSubmit={handleSubmit}>
           {/* Toifa tanlash */}
           <div className="mb-4">
-            <label className="block text-gray-700">Админ тоифасини танланг</label>
+            <label className="block text-gray-700">
+              Админ тоифасини танланг
+            </label>
             <select
               name="role"
               className="w-full border border-gray-300 rounded p-2"

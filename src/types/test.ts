@@ -7,6 +7,19 @@ export interface QuestionType {
 	retakeDate: number
 }
 
+export interface QuestionDto {
+	id: number;
+	attachmentIds: number[];
+	categoryId: number;
+	categoryName: string;
+	createdByName: string;
+	difficulty: "HARD" | "MEDIUM" | "EASY";
+	finiteError: number;
+	name: string;
+	optionDtos: OptionType[];
+	type: "ANY_CORRECT" | "MANY_CHOICE" | "SUM";
+  }
+
 export interface OptionType {
 	id: number
 	file: number | null
@@ -15,16 +28,13 @@ export interface OptionType {
 	answer?: string
 }
 
-export interface ResultType {
-	firstName: string
-	lastName: string
-	categoryName: string
-	correctAnswer: number
-	countAnswer: number
-	duration: number
-	createdAt: string
-	testScore: number
-}
+export interface QuizResult {
+	questionId: number;
+	answer: string | string[];
+	optionIds: number[];
+  }
+  
+  
 
 export interface PaginatedResponse<T> {
 	body: T[]
