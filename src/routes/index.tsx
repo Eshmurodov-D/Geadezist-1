@@ -13,6 +13,7 @@ import Register from '@/auth/RegisterForm/register';
 import ForgotPassword from '@/auth/PasswordPage/ForgetPassword/forget';
 import ResetPassword from '@/auth/PasswordPage/ResetPassword/reset';
 import VerifyCode from '@/auth/VerifyCode/VerifyfCode';
+import Results from '@/pages/Test/Results';
 // import NotFound from '@/pages/notFound';
 // import Distric from '@/pages/Addresses/distric';
 
@@ -61,7 +62,7 @@ if(!role) navigate('/login')
         <Route path='test' element={protectedRoute(['ROLE_TESTER', 'ROLE_SUPER_ADMIN', 'ROLE_CLIENT'], <Test />)} />
         <Route path='user-results' element={protectedRoute(['ROLE_SUPER_ADMIN', 'ROLE_ADMIN'], <UserResults />)} />
         <Route path='employees' element={protectedRoute('ROLE_SUPER_ADMIN', <Employees />)} />
-        <Route path='result' element={protectedRoute('ROLE_CLIENT', <Employees />)} />
+        <Route path='result' element={protectedRoute('ROLE_CLIENT', <Results />)} />
         <Route path='addresses' element={protectedRoute('ROLE_SUPER_ADMIN', <Addresses />)} />
       </Route>
     </Routes>
