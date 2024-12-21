@@ -70,13 +70,13 @@ function Login() {
       setResData(null); // resData ni qayta null qilish
       setEmail('');
       setPassword('');
-      const role = localStorage.getItem('role');
+      const role = sessionStorage.getItem('role');
       
       if (role === 'ROLE_SUPER_ADMIN') navigate('/result');
       if (role === 'ROLE_TESTER') navigate('/tester-dashboard');
       if (role === 'ROLE_ADMIN') navigate('/admin-dashboard');
       if (role === 'ROLE_CLIENT') navigate('/result');
-      else navigate('/register');
+      else navigate('/login');
     }
   }, [resData]); // resData o'zgarganda faqat ishlaydi
 

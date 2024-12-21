@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // import Checkbox from '@/components/checkbox'
 // import { Button } from '@/components/ui/button'
 // import {
@@ -292,11 +291,9 @@
 // }
 
 // export default Quiz
-=======
 import Checkbox from "@/components/checkbox";
 import { Button } from "@/components/ui/button";
 import {
-<<<<<<< HEAD
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
@@ -309,6 +306,7 @@ import useTestStore from '@/store/tets.store'
 import { OptionType } from '@/types/test'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { toast } from "react-toastify";
 // import { toast } from 'sonner'
 
 interface QuestionDto {
@@ -323,21 +321,6 @@ interface QuestionDto {
 	optionDtos: OptionType[]
 	type: 'ANY_CORRECT' | 'MANY_CHOICE' | 'INPUT'
 }
-=======
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { BASE_URL } from "@/services/api";
-import axiosConfiguration from "@/services/axios";
-import useTestStore from "@/store/tets.store";
-import { QuestionDto } from "@/types/test";
-import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { toast } from "sonner";
->>>>>>> e0d1d51ffafd758674f64ce4b17817ab2a655244
 
 const Quiz = () => {
   const { id } = useParams();
@@ -353,7 +336,6 @@ const Quiz = () => {
   const [duration, setDuration] = useState(500);
   const [result, setResult] = useState([]);
 
-<<<<<<< HEAD
 	const getTests = async () => {
 		setIsLoading(true)
 		try {
@@ -369,7 +351,6 @@ const Quiz = () => {
 			setIsLoading(false)
 		}
 	}
-=======
   const getTests = async () => {
     setIsLoading(true);
     try {
@@ -385,7 +366,6 @@ const Quiz = () => {
       setIsLoading(false);
     }
   };
->>>>>>> e0d1d51ffafd758674f64ce4b17817ab2a655244
 
   useEffect(() => {
     getTests();
@@ -641,4 +621,3 @@ const Quiz = () => {
 };
 
 export default Quiz;
->>>>>>> 2c0f700293039d8b962f2b91c4adfff6ff909f4d
