@@ -18,7 +18,7 @@ function Login() {
 
   const handleSubmit = async () => {
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    
+
     if (!emailRegex.test(email)) {
       setEmailError("Iltimos, to'g'ri email manzilini kiriting.");
       return;
@@ -50,12 +50,14 @@ function Login() {
           position: "top-center",
           autoClose: 2000,
         });
-        setResData(response.data); // API javobini saqlash
+        setResData(response.data);
+        console.log(resData);
+
 
       } else {
         setError("Email yoki parol noto'g'ri.");
       }
-      
+
     } catch (error) {
       console.error(error);
       setError("Tizimda xatolik yuz berdi, iltimos qayta urinib ko'ring.");
@@ -64,10 +66,10 @@ function Login() {
     }
   };
 
-  // useEffect faqat resData o'zgarganda ishga tushadi
-  useEffect(() => {
+
+  const CheckRole = () => {
     if (resData) {
-      setResData(null); // resData ni qayta null qilish
+      setResData(null);
       setEmail('');
       setPassword('');
       const role = sessionStorage.getItem('role');
@@ -78,7 +80,11 @@ function Login() {
       if (role === 'ROLE_CLIENT') navigate('/result');
       else navigate('/login');
     }
-  }, [resData]); // resData o'zgarganda faqat ishlaydi
+  }
+
+  useEffect(()=>{
+    CheckRole()
+  },[CheckRole()])
 
   const isLoginButtonDisabled = !(email && password) || !!error || !!emailError || isLoading;
 

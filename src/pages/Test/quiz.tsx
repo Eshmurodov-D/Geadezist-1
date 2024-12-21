@@ -354,7 +354,7 @@ const Quiz = () => {
   const getTests = async () => {
     setIsLoading(true);
     try {
-      const { data } = await axiosConfiguration.get(`quiz/start/${id}`);
+      const { data } = await axiosConfiguration.get<any>(`quiz/start/${id}`);
       if (data.success) {
         setTests(data.body.questionDtoList);
         setDuration(data.body.duration);
@@ -385,6 +385,13 @@ const Quiz = () => {
   const remainingTime = Math.ceil((progress / 100) * duration);
 
   const goToNextQuestion = () => {
+    if (
+      !selectedAnswer ||
+      (Array.isArray(selectedAnswer) && selectedAnswer.length === 0)
+    ) {
+      toast.warning("Please select an answer before proceeding!");
+      return;
+    }
     if (tests && selectedAnswer) {
       const optionIds =
         tests && tests[currentQuestionIndex].optionDtos?.map((item) => item.id);
@@ -393,9 +400,7 @@ const Quiz = () => {
         ...prev,
         {
           questionId: tests[currentQuestionIndex].id,
-          answer: Array.isArray(selectedAnswer)
-            ? selectedAnswer.join(",")
-            : selectedAnswer,
+          answer: selectedAnswer,
           optionIds,
         },
       ]);
@@ -419,7 +424,7 @@ const Quiz = () => {
     const currentQuestion = tests[currentQuestionIndex];
     const currentOptions = currentQuestion.optionDtos;
 
-    if (currentQuestion.type === "SUM") {
+    if (currentQuestion.type === "INPUT") {
       return (
         <Input
           placeholder="Enter your answer."
@@ -434,12 +439,7 @@ const Quiz = () => {
         option.answer && (
           <Checkbox
             key={index}
-            type={
-              currentQuestion.type === "MANY_CHOICE" ||
-              currentQuestion.type === "ANY_CORRECT"
-                ? "checkbox"
-                : "radio"
-            }
+            type={currentQuestion.type === "MANY_CHOICE" ? "checkbox" : "radio"}
             label={option.answer}
             value={option.answer}
             checked={
@@ -448,10 +448,7 @@ const Quiz = () => {
                 : selectedAnswer === option.answer
             }
             onChange={() => {
-              if (
-                currentQuestion.type === "MANY_CHOICE" ||
-                currentQuestion.type === "ANY_CORRECT"
-              ) {
+              if (currentQuestion.type === "MANY_CHOICE") {
                 setSelectedAnswer((prev): any => {
                   if (Array.isArray(prev)) {
                     return prev.includes(option.answer)
@@ -471,7 +468,6 @@ const Quiz = () => {
 
   const sendResult = async () => {
     try {
-      if (!result.length) toast.warning("Siz javob tanlamagansiz");
       const { data } = await axiosConfiguration.post(
         `quiz/pass/${id}?duration=${duration}&countAnswers=${tests?.length}`,
         result
@@ -493,10 +489,7 @@ const Quiz = () => {
         <div className="relative h-2 bg-gray-200 rounded-lg overflow-hidden">
           <div
             className="absolute top-0 left-0 h-2 bg-blue-500 rounded-lg transition-all duration-1000 ease-linear"
-            // If the request is successful, set the data in the state to the response
             style={{ width: `${progress}%` }}
-
-            // Navigate to the results page
           ></div>
         </div>
 
@@ -543,15 +536,11 @@ const Quiz = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="flex bg-red-500 p-3 rounded-xl">
-                    {tests.map((item, i) => (
+                    {tests.map((__, i) => (
                       <DropdownMenuItem key={i}>
                         <Button
                           onClick={() => setCurrentQuestionIndex(i)}
-                          className={`${
-                            result.some((r) => r.questionId === item.id)
-                              ? "bg-green-500 text-white"
-                              : "bg-white text-black"
-                          } hover:bg-transparent hover:text-black`}
+                          className="hover:bg-transparent bg-white text-black hover:text-black"
                         >
                           {i + 1}
                         </Button>
@@ -569,9 +558,6 @@ const Quiz = () => {
                   Orqaga
                 </Button>
                 <Button
-                  disabled={
-                    currentQuestionIndex === tests.length - 1 && !result.length
-                  }
                   className={`px-7 py-3 cursor-pointer ${
                     currentQuestionIndex === tests.length - 1
                       ? "bg-green-500"
@@ -602,15 +588,8 @@ const Quiz = () => {
               Тест вақти тугади. Илтимос, натижаларни текширинг.
             </p>
             <div className="flex justify-center">
-              <Button
-                onClick={() => result.length && sendResult}
-                className="px-7 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-lg"
-              >
-                {result.length ? (
-                  <Link to="/result">Натижаларни кўриш</Link>
-                ) : (
-                  <Link to="/test">Bosh sahifa</Link>
-                )}
+              <Button className="px-7 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-lg">
+                <Link to="/results">Натижаларни кўриш</Link>
               </Button>
             </div>
           </div>

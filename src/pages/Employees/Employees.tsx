@@ -4,6 +4,7 @@ import Button from "../../components/Button";
 import Modal from "../../components/modal";
 import Input from "../../components/input";
 import axiosConfiguration from "@/services/axios";
+import { AxiosError } from "axios";
 
 interface Employee {
   id: number;
@@ -122,7 +123,7 @@ const Employees: React.FC = () => {
         password: "",
         confirmPassword: "",
       });
-    } catch (error: any) {
+    } catch (error: AxiosError ) {
       console.error("Xodimni qo'shishda xatolik:", error);
       const errorMessage = error.response?.data?.message;
       alert(errorMessage);
