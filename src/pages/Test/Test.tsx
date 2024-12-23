@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { FaPlus, FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-// import {Iconka} from "src/pages/Test/SVG/delete.png"
 import deleteIcon from "./SVG/delete.png";
 
 const apiUrl = 'http://142.93.106.195:9090';
@@ -96,7 +95,6 @@ const QuestionTable = () => {
 	const addOption = () => {
 		setFormData({ ...formData, options: [...formData.options, { text: '', file: null, isCorrect: false }] });
 	};
-
 	const saveData = () => {
 		if (
 			formData.question &&
@@ -112,13 +110,20 @@ const QuestionTable = () => {
 			} else {
 				setTableData([...tableData, formData]);
 			}
-			toast.success('Savol muvaffaqiyatli saqlandi!');
+			// Success toast
+			toast.success('Savol muvaffaqiyatli saqlandi!', {
+				position: "top-center", // Yuqoridan chiqadi
+				autoClose: 3000,         // 3 soniya davomida ko‘rsatiladi
+				hideProgressBar: true,   // Progress bar ni yashirish
+				closeOnClick: true,      // Kliklashda yopiladi
+				pauseOnHover: true,      // Hoverda to‘xtaydi
+				draggable: true,         // Surish mumkin
+			});
 			closeModal();
 		} else {
 			toast.error('Iltimos, barcha maydonlarni to‘ldiring!');
 		}
 	};
-
 	const handleImageClick = (image: File) => {
 		setCurrentImage(image);
 		setShowImage(true);
@@ -156,9 +161,9 @@ const QuestionTable = () => {
 		<div className="container mx-auto p-4">
 			<button
 				onClick={openModal}
-				className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+				className="bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800"
 			>
-				Savol qo'shish
+				+ Savol qo'shish
 			</button>
 
 			{/* Jadval */}
@@ -303,8 +308,8 @@ const QuestionTable = () => {
 				<div className="fixed inset-0 bg-gray-800 bg-opacity-85 flex items-center justify-center">
 					<div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
 						<div className="flex items-center mb-32">
-							<img src={deleteIcon} alt="Delete Icon" className="w-24 translate-y-32" />
-							<p className="text-lg text-center translate-y-20 translate-x-7 text-3xl	">Siz ushbu savolni o‘chirishni xohlaysizmi?</p>
+							<img src={deleteIcon} alt="Delete Icon" className="w-28 -translate-y-1 translate-x-60" />
+							<p className="text-lg text-center translate-y-20 translate-x-7 text-4xl	">Siz ushbu savolni o‘chirishni xohlaysizmi?</p>
 						</div>
 						<div className="flex justify-between">
 							<button
