@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { FaPlus, FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+// import {Iconka} from "src/pages/Test/SVG/delete.png"
+import deleteIcon from "./SVG/delete.png";
 
 const apiUrl = 'http://142.93.106.195:9090';
 
@@ -298,9 +300,12 @@ const QuestionTable = () => {
 
 			{/* Delete confirmation modal */}
 			{isDeleteModalOpen && (
-				<div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
+				<div className="fixed inset-0 bg-gray-800 bg-opacity-85 flex items-center justify-center">
 					<div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-						<p className="text-lg mb-4">Siz ushbu savolni o‘chirishni xohlaysizmi?</p>
+						<div className="flex items-center mb-32">
+							<img src={deleteIcon} alt="Delete Icon" className="w-24 translate-y-32" />
+							<p className="text-lg text-center translate-y-20 translate-x-7 text-3xl	">Siz ushbu savolni o‘chirishni xohlaysizmi?</p>
+						</div>
 						<div className="flex justify-between">
 							<button
 								onClick={deleteQuestion}
