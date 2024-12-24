@@ -2,6 +2,8 @@ import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./routes";
 
+
+
 const App: React.FC = () => {
   return (
     <div className="bg-gray-100 min-h-screen">
