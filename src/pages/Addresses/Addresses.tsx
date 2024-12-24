@@ -1,12 +1,20 @@
-import React from "react";
+// import React from 'react'
 
-const Addresses: React.FC = () => {
+// import AddDistrict from "./distric"
+import District from "./distric"
+import Region from "./region"
+
+
+function Addresses() {
   return (
-    <div className="p-4 bg-white shadow rounded">
-      <h2 className="text-lg font-bold mb-4">adris</h2>
-      <p>Bu bo'limda adris boshqarish mumkin.</p>
-    </div>
-  );
-};
+    <div>
 
-export default Addresses;
+      <Region/>
+      {/* <AddDistrict/> */}
+      <District/>
+
+    </div>
+  )
+}
+
+export default Addresses

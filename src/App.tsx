@@ -1,6 +1,6 @@
 import React from "react";
-import AppRoutes from "./routes";
 import { BrowserRouter } from "react-router-dom";
+import AppRoutes from "./routes";
 
 
 
@@ -10,7 +10,6 @@ const App: React.FC = () => {
       <BrowserRouter>
         <AppRoutes />
       </BrowserRouter>
-
     </div>
   );
 };

@@ -1,72 +1,79 @@
-import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import useAuthStore from "../store/useAuthStore";
-import Login from "../pages/Login";
-import Dashboard from "../pages/Dashboard/Dashboard";
-import Users from "../pages/Users/Users";
-import Test from "../pages/Test/Test";
-import AdminLayout from "../Layout/AdminLayout";
-import Categories from "../pages/Categories/Categories";
-import UserResults from "../pages/User-results/UserResults";
-import Employees from "../pages/Employees/Employees";
-import Addresses from "../pages/Addresses/Addresses";
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+
+import React from 'react';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
+import AdminLayout from '../Layout/AdminLayout';
+import Addresses from '../pages/Addresses/Addresses';
+import Categories from '../pages/Categories/Categories';
+import Dashboard from '../pages/Dashboard/Dashboard';
+import Employees from '../pages/Employees/Employees';
+import Test from '../pages/Test/Test';
+import UserResults from '../pages/User-results/UserResults';
+import Users from '../pages/Users/Users';
+import Login from '@/auth/LoginForm/login';
+import Register from '@/auth/RegisterForm/register';
+import ForgotPassword from '@/auth/PasswordPage/ForgetPassword/forget';
+import ResetPassword from '@/auth/PasswordPage/ResetPassword/reset';
+import VerifyCode from '@/auth/VerifyCode/VerifyfCode';
+import Results from '@/pages/Test/Results';
+import NotFound from '@/pages/notfound';
+// import NotFound from '@/pages/notFound';
+// import Distric from '@/pages/Addresses/distric';
 
 const AppRoutes: React.FC = () => {
-    const { user } = useAuthStore(); // Foydalanuvchi holatini olish
-    // Default redirect sahifa
-    const getDefaultRedirectPath = () => {
-        switch (user?.role) {
-            case "testadmin":
-                return "/categories";
-            case "admin":
-                return "/user-results";
-            case "superadmin":
-                return "/dashboard";
-            default:
-                return "/login";
-        }
-    };
-    // Rolni tekshirish uchun yordamchi funksiya
-    const protectedRoute = (role: string | string[], component: JSX.Element) => {
-        const hasAccess = Array.isArray(role)
-            ? role.includes(user?.role || "")
-            : user?.role === role;
+  const role = localStorage.getItem('role');
+  const navigate = useNavigate()
+if(!role) navigate('/login')
+  const getDefaultRedirectPath = () => {
+    switch (role) {
+      case 'ROLE_TESTER':
+        return '/categories';
+      case 'ROLE_ADMIN':
+        return '/user-results';
+      case 'ROLE_SUPER_ADMIN':
+        return '/dashboard';
+      case 'ROLE_CLIENT':
+        return '/result';
+      default:
+        return '/login';
+    }
+  };
 
-        return hasAccess ? component : <Navigate to="/login" />;
-    };
-    return (
-        <Routes>
-            {/* Login sahifasi */}
-            <Route
-                path="/login"
-                element={user ? <Navigate to={getDefaultRedirectPath()} /> : <Login />}
-            />
+  const protectedRoute = (roles: string | string[], component: JSX.Element) => {
+    const hasAccess = Array.isArray(roles)
+      ? roles.includes(role || '')
+      : role === roles;
 
-            {/* Admin layout */}
-            <Route
-                path="/"
-                element={user ? <AdminLayout /> : <Navigate to="/login" />}
-            >
-                {/* Sahifalar */}
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route path="users" element={protectedRoute("superadmin", <Users />)} />
-                <Route
-                    path="categories"
-                    element={protectedRoute(["testadmin", "superadmin"], <Categories />)}
-                />
-                <Route
-                    path="test"
-                    element={protectedRoute(["testadmin", "superadmin"], <Test />)}
-                />
-                <Route
-                    path="user-results"
-                    element={protectedRoute(["superadmin", "admin"], <UserResults />)}
-                />
-                <Route path="employees" element={protectedRoute("superadmin", <Employees />)} />
-                <Route path="addresses" element={protectedRoute("superadmin", <Addresses />)} />
-            </Route>
-        </Routes>
-    );
+    return hasAccess ? component : <Navigate to='/login' />;
+  };
+
+  return (
+    <Routes>
+      <Route path='/register' element={<Register />} />
+      <Route path='/changepass' element={<ForgotPassword />} />
+      <Route path='/reset-password' element={<ResetPassword />} />
+      <Route path='/verfy-code' element={<VerifyCode />} />
+      <Route path='/*' element={<NotFound />} />
+      {/* <Route path='/*' element={<NotFound />} /> */}
+
+      <Route path='/login' element={role ? <Navigate to={getDefaultRedirectPath()} /> : <Login />} />
+      {/* <Route path='/distric' element={<Distric />} /> */}
+
+      <Route path='/' element={role ? <AdminLayout /> : <Navigate to='/login' />}>
+        <Route path='dashboard' element={<Dashboard />} />
+        <Route path='users' element={protectedRoute('ROLE_SUPER_ADMIN', <Users />)} />
+        <Route path='categories' element={protectedRoute(['ROLE_TESTER', 'ROLE_SUPER_ADMIN'], <Categories />)} />
+        <Route path='test' element={protectedRoute(['ROLE_TESTER', 'ROLE_SUPER_ADMIN', 'ROLE_CLIENT'], <Test />)} />
+        <Route path='user-results' element={protectedRoute(['ROLE_SUPER_ADMIN', 'ROLE_ADMIN'], <UserResults />)} />
+        <Route path='employees' element={protectedRoute('ROLE_SUPER_ADMIN', <Employees />)} />
+        <Route path='result' element={protectedRoute('ROLE_CLIENT', <Results />)} />
+        <Route path='addresses' element={protectedRoute('ROLE_SUPER_ADMIN', <Addresses />)} />
+      </Route>
+    </Routes>
+  );
 };
 
 export default AppRoutes;
