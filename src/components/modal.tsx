@@ -18,7 +18,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
         <div className="flex items-center justify-between p-4 border-b">
           <h3 className="text-lg font-medium">{title}</h3>
           {/* Yopish tugmasi */}
-          <Button onClick={onClose}>
+          <Button variant="secondary" onClick={onClose}>
             &times; {/* X harfi (yopish tugmasi) */}
           </Button>
         </div>

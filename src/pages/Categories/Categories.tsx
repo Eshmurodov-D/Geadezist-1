@@ -1,4 +1,3 @@
-// React imports
 import React, { useState, useEffect } from "react";
 import Button from "../../components/Button";
 import Modal from "../../components/modal";
@@ -286,16 +285,28 @@ const Categories: React.FC = () => {
                   <td className="px-6 py-4">{category.createdBy}</td>
                   <td className="px-6 py-4">{category.fileId}</td>
                   <td className="px-6 py-4">{category.main ? "Ҳа" : "Йўқ"}</td>
-                  <td className="px-6 py-4 flex gap-2">
+                  <td className="px-6 py-7 flex gap-2">
                     <Button
                       variant="secondary"
                       onClick={() => handleEdit(category)}
+                      style={{
+                        backgroundColor: "transparent", 
+                        border: "none",
+                        padding: 0, 
+                        color: "inherit",
+                      }}
                     >
                       <FaEdit />
                     </Button>
                     <Button
                       variant="danger"
                       onClick={() => handleDelete(category.id)}
+                      style={{
+                        backgroundColor: "transparent", // Remove the background
+                        border: "none", // Remove any border
+                        padding: 0, // Remove padding to fit the icon
+                        color: "inherit", // Icon color will inherit from parent
+                      }}
                     >
                       <FaTrashAlt />
                     </Button>
@@ -362,8 +373,8 @@ const Categories: React.FC = () => {
             placeholder="Қайта қабул қилишни киритинг"
           />
           <div className="flex gap-4 justify-end mt-4">
-            <Button type="submit">{editCategory ? "Сақлаш" : "Қўшиш"}</Button>
-            <Button onClick={handleCloseModal}>Ёпиш</Button>
+            <Button variant="secondary" type="submit">{editCategory ? "Сақлаш" : "Қўшиш"}</Button>
+            <Button variant="secondary" onClick={handleCloseModal}>Ёпиш</Button>
           </div>
         </form>
       </Modal>
@@ -372,5 +383,3 @@ const Categories: React.FC = () => {
 };
 
 export default Categories;
-=======
->>>>>>> 2abeb8d1bed8261adbdb04877d2bff963930e8cc
