@@ -75,43 +75,44 @@ function Login() {
       !(email && password) || !!error || !!emailError || isLoading;
 
   return (
-      <div className="login-container" style={{ fontFamily: 'Arial, sans-serif', textAlign: 'center', padding: '20px' }}>
-        <div className="login-form" style={{ maxWidth: '400px', margin: '0 auto', border: '1px solid #ddd', borderRadius: '8px', padding: '20px', backgroundColor: '#f9f9f9' }}>
-          <h2 style={{ marginBottom: '20px', color: '#333' }}>Tizimga kirish</h2>
+      <div className="flex justify-center items-center h-screen bg-gray-100">
+        <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm animate__animated animate__fadeIn">
+          <h2 className="text-2xl font-semibold text-center mb-6 text-gray-800">Tizimga kirish</h2>
+
           <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Elektron pochtangizni kiriting"
-              style={{ width: '100%', padding: '10px', marginBottom: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
+              className="w-full p-3 mb-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {emailError && <p className="error-text" style={{ color: 'red', fontSize: '14px' }}>{emailError}</p>}
+          {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
+
           <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Parolni kiriting"
-              style={{ width: '100%', padding: '10px', marginBottom: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
+              className="w-full p-3 mb-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {error && <p className="error-text" style={{ color: 'red', fontSize: '14px' }}>{error}</p>}
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+
           <button
               onClick={handleSubmit}
               disabled={isLoginButtonDisabled}
-              style={{
-                width: '100%',
-                padding: '10px',
-                backgroundColor: isLoginButtonDisabled ? '#ccc' : '#4CAF50',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: isLoginButtonDisabled ? 'not-allowed' : 'pointer',
-                fontSize: '16px',
-              }}
+              className={`w-full p-3 text-white rounded-md ${isLoginButtonDisabled ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'} transition`}
           >
             {isLoading ? "Kirish..." : "Tizimga kirish"}
           </button>
-          <p style={{ marginTop: '10px' }}>
-            <a href="#" onClick={handleRegisterNavigation} style={{ color: '#4CAF50', textDecoration: 'none' }}>Ro'yxatdan o'tish</a>
+
+          <p className="mt-4 text-center">
+            <a
+                href="#"
+                onClick={handleRegisterNavigation}
+                className="text-blue-500 hover:text-blue-700"
+            >
+              Ro'yxatdan o'tish
+            </a>
           </p>
           <ToastContainer />
         </div>
