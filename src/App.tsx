@@ -8,7 +8,6 @@ const App: React.FC = () => {
       <BrowserRouter>
         <AppRoutes />
       </BrowserRouter>
-
     </div>
   );
 };
