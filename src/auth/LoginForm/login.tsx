@@ -20,14 +20,14 @@ function Login() {
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
     if (!emailRegex.test(email)) {
-      setEmailError("Please enter a valid email.");
+      setEmailError("Iltimos, to'g'ri email kiriting.");
       return;
     } else {
       setEmailError("");
     }
 
     if (password.length < 6 || password.length > 16) {
-      setError("Password must be between 6 and 16 characters.");
+      setError("Parol uzunligi 6-16 belgidan iborat bo'lishi kerak.");
       return;
     } else {
       setError("");
@@ -43,18 +43,18 @@ function Login() {
       if (response.data && response.data.token && response.data.role) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("role", response.data.role);
-        toast.success("Successfully logged in!", {
+        toast.success("Muvaffaqiyatli tizimga kirdingiz!", {
           position: "top-center",
           autoClose: 2000,
         });
         setResData(response.data);
         navigate(`/Header`); // Redirect to a dashboard or relevant page
       } else {
-        setError("Incorrect email or password.");
+        setError("Email yoki parol noto'g'ri.");
       }
     } catch (error) {
       console.error(error);
-      setError("An error occurred. Please try again.");
+      setError("Xatolik yuz berdi. Qayta urinib ko'ring.");
     } finally {
       setIsLoading(false);
     }
@@ -75,26 +75,44 @@ function Login() {
       !(email && password) || !!error || !!emailError || isLoading;
 
   return (
-      <div className="login-container">
-        <div className="login-form">
-          <h2>Login</h2>
+      <div className="login-container" style={{ fontFamily: 'Arial, sans-serif', textAlign: 'center', padding: '20px' }}>
+        <div className="login-form" style={{ maxWidth: '400px', margin: '0 auto', border: '1px solid #ddd', borderRadius: '8px', padding: '20px', backgroundColor: '#f9f9f9' }}>
+          <h2 style={{ marginBottom: '20px', color: '#333' }}>Tizimga kirish</h2>
           <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
+              placeholder="Elektron pochtangizni kiriting"
+              style={{ width: '100%', padding: '10px', marginBottom: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
           />
-          {emailError && <p className="error-text">{emailError}</p>}
+          {emailError && <p className="error-text" style={{ color: 'red', fontSize: '14px' }}>{emailError}</p>}
           <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
+              placeholder="Parolni kiriting"
+              style={{ width: '100%', padding: '10px', marginBottom: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
           />
-          {error && <p className="error-text">{error}</p>}
-          <button onClick={handleSubmit} disabled={isLoginButtonDisabled}>
-            {isLoading ? "Logging in..." : "Login"}
+          {error && <p className="error-text" style={{ color: 'red', fontSize: '14px' }}>{error}</p>}
+          <button
+              onClick={handleSubmit}
+              disabled={isLoginButtonDisabled}
+              style={{
+                width: '100%',
+                padding: '10px',
+                backgroundColor: isLoginButtonDisabled ? '#ccc' : '#4CAF50',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: isLoginButtonDisabled ? 'not-allowed' : 'pointer',
+                fontSize: '16px',
+              }}
+          >
+            {isLoading ? "Kirish..." : "Tizimga kirish"}
           </button>
+          <p style={{ marginTop: '10px' }}>
+            <a href="#" onClick={handleRegisterNavigation} style={{ color: '#4CAF50', textDecoration: 'none' }}>Ro'yxatdan o'tish</a>
+          </p>
           <ToastContainer />
         </div>
       </div>

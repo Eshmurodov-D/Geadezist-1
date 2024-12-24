@@ -258,7 +258,6 @@ const Categories: React.FC = () => {
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 <th className="px-6 py-3">ID</th>
-                <th className="px-6 py-3">Т/П</th>
                 <th className="px-6 py-3">Категория номи</th>
                 <th className="px-6 py-3">Тавсиф</th>
                 <th className="px-6 py-3">Саволлар сони</th>
@@ -372,5 +371,3 @@ const Categories: React.FC = () => {
 };
 
 export default Categories;
-=======
->>>>>>> 2abeb8d1bed8261adbdb04877d2bff963930e8cc

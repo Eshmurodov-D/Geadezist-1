@@ -13,3 +13,19 @@ const App: React.FC = () => {
 };
 
 export default App;
+// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+// import Login from "./auth/LoginForm/login.tsx";
+// import AppRoutes from "./routes";
+//
+// function App() {
+//     return (
+//         <Router>
+//             <Routes>
+//                 <Route path="/login" element={<Login />} />
+//                 <AppRoutes />
+//             </Routes>
+//         </Router>
+//     );
+// }
+//
+// export default App;

@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaPlus, FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import deleteIcon from "./SVG/delete.png";
+import {Link} from "react-router-dom";
 
 const apiUrl = 'http://142.93.106.195:9090';
 
@@ -165,6 +166,13 @@ const QuestionTable = () => {
 			>
 				+ Savol qo'shish
 			</button>
+			<div className="text-sm text-gray-500 mt-2 text-end -translate-y-14 -translate-x-20 md:mt-0">
+          <span className="font-medium text-gray-700">
+            <Link to="/dashboard">Бошқарув панели</Link>
+          </span>{" "}
+				/ <span className="text-blue-600 font-medium">Тест</span>
+			</div>
+
 
 			{/* Jadval */}
 			<table className="table-auto w-full mt-4 border border-gray-200">
