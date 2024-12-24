@@ -59,7 +59,7 @@ if(!role) navigate('/login')
       <Route path='/*' element={<NotFound />} />
       {/* <Route path='/*' element={<NotFound />} /> */}
 
-      <Route path='/login' element={role ? <Navigate to={getDefaultRedirectPath()} /> : <Login />} />
+          <Route path='/login' element={role ? <Navigate to={getDefaultRedirectPath()} /> : <Login />} />
       {/* <Route path='/distric' element={<Distric />} /> */}
 
       <Route path='/' element={role ? <AdminLayout /> : <Navigate to='/login' />}>
