@@ -4,55 +4,65 @@ import Button from "../../components/Button";
 import Modal from "../../components/modal";
 import Input from "../../components/input";
 import axiosConfiguration from "@/services/axios";
+import { AxiosError } from "axios";
 
-// API'dan keladigan foydalanuvchi ma'lumotlari uchun interfeys
-interface UserData {
-  id: number;
-  name: string;
-  email: string;
-  phone?: string;
-}
-
-// Xodimlar uchun interfeys
 interface Employee {
   id: number;
-  fullName: string;
-  lastName: string;
+  firstname: string;
+  lastname: string;
   email: string;
-  phone?: string;
-  position: string;
-  role: string; // Toifa
+  phoneNumber?: string;
+  role: string;
   isActive: boolean;
+  order: number; // Tartib raqam
 }
 
 const Employees: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [employees, setEmployees] = useState<Employee[]>([]);
+  const [employeesId, setEmployeesId] = useState<string>("");
   const [formData, setFormData] = useState({
-    fullName: "",
-    lastName: "",
+    firstname: "",
+    lastname: "",
     email: "",
-    phone: "",
-    position: "",
-    role: "",
+    phoneNumber: "",
     password: "",
     confirmPassword: "",
+    role: "",
   });
 
+  // Xodimlar ro'yxatini olish funksiyasi
   const getEmployees = async () => {
     try {
-      const { data } = await axiosConfiguration.get("/user?page=0&size=10");
-      setEmployees(data.body.body);
+      const { data } = await axiosConfiguration.get(
+        "http://142.93.106.195:9090/user/get/admin/list"
+      );
+
+      const formattedData: Employee[] = [];
+      for (let i = 0; i < data.body.body.length; i++) {
+        const emp = data.body.body[i];
+        formattedData.push({
+          ...emp,
+          phoneNumber: emp.phoneNumber,
+          isActive: emp.isActive ?? false,
+          order: i + 1, // Tartib raqam
+        });
+      }
+
+      setEmployees(formattedData);
     } catch (error) {
-      console.log(error);
+      console.error("Xodimlarni olishda xato yuz berdi:", error);
+      alert(
+        "Xodimlarni olishda xato yuz berdi. Iltimos, qayta urinib ko'ring."
+      );
     }
   };
 
-  // API'dan ma'lumot olish
   useEffect(() => {
     getEmployees();
   }, []);
 
+  // Formdagi ma'lumotlarni boshqarish
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -63,101 +73,111 @@ const Employees: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Form yuborilganda
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (formData.password !== formData.confirmPassword) {
       alert("Parollar bir-biriga mos emas!");
       return;
     }
 
-    // Lavozimni role qiymatiga qarab aniqlash
-    const position =
-      formData.role === "superadmin" ? "Тестер админ" : "Текширувчи админ";
+    try {
+      const newEmployee = {
+        firstname: formData.firstname,
+        lastname: formData.lastname,
+        email: formData.email,
+        phoneNumber: formData.phoneNumber,
+        password: formData.password,
+        confirmPassword: formData.confirmPassword,
+        role: formData.role,
+      };
 
-    const newEmployee: Employee = {
-      id: employees.length + 1,
-      fullName: formData.fullName,
-      lastName: formData.lastName,
-      email: formData.email,
-      phone: formData.phone,
-      position: position,
-      role: formData.role,
-      isActive: true,
-    };
+      const response = await axiosConfiguration.post(
+        "/auth/save/admin",
+        newEmployee
+      );
 
-    // Ma'lumotni serverga yuborish
-    fetch("http://localhost:3000/user-info", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newEmployee),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        // Foydalanuvchilarni yangilash va localStorage'ga yozish
-        const updatedEmployees = [...employees, data];
-        setEmployees(updatedEmployees);
-        localStorage.setItem("employees", JSON.stringify(updatedEmployees));
-      })
-      .catch((err) => console.error("Ma'lumotni saqlashda xato:", err));
+      if (response.status === 200 || response.status === 201) {
+        const addedEmployee = response.data;
+        setEmployees((prevEmployees) => [
+          ...prevEmployees,
+          {
+            ...addedEmployee,
+            isActive: false,
+            order: prevEmployees.length + 1,
+          },
+        ]);
+        alert("Xodim muvaffaqiyatli qo'shildi!");
+      } else {
+        alert("Xodimni qo'shishda xatolik yuz berdi.");
+      }
 
-    setIsModalOpen(false);
-
-    // Formni tozalash
-    setFormData({
-      fullName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      position: "",
-      role: "",
-      password: "",
-      confirmPassword: "",
-    });
-  };
-
-  const toggleActive = (id: number) => {
-    const updatedEmployees = employees.map((employee) =>
-      employee.id === id
-        ? { ...employee, isActive: !employee.isActive }
-        : employee
-    );
-
-    // Ma'lumotni yangilash
-    const updatedEmployee = updatedEmployees.find((emp) => emp.id === id);
-
-    if (updatedEmployee) {
-      fetch(`http://localhost:3000/user-info/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedEmployee),
-      })
-        .then((res) => res.json())
-        .then(() => {
-          setEmployees(updatedEmployees);
-          localStorage.setItem("employees", JSON.stringify(updatedEmployees));
-        })
-        .catch((err) =>
-          console.error("Faol holatini o'zgartirishda xato:", err)
-        );
+      setIsModalOpen(false);
+      setFormData({
+        firstname: "",
+        lastname: "",
+        email: "",
+        phoneNumber: "",
+        role: "",
+        password: "",
+        confirmPassword: "",
+      });
+    } catch (error: AxiosError ) {
+      console.error("Xodimni qo'shishda xatolik:", error);
+      const errorMessage = error.response?.data?.message;
+      alert(errorMessage);
     }
   };
 
+  const toggleActive = async (id: number) => {
+    try {
+      const employee = employees.find((emp) => emp.id === id);
+      if (!employee) throw new Error("Xodim topilmadi!");
+
+      // Faollik holatini teskari qilish
+      const updatedEmployee = { ...employee, isActive: !employee.isActive };
+
+      // URLni to'g'ri formatda yuborish
+      const response = await axiosConfiguration.put(
+        `http://142.93.106.195:9090/user/active/${employeesId}`,
+        updatedEmployee
+      );
+
+      if (response.status === 200) {
+        setEmployees((prevEmployees) =>
+          prevEmployees.map((emp) =>
+            emp.id === id ? { ...emp, isActive: !emp.isActive } : emp
+          )
+        );
+        console.log("Faollik holati muvaffaqiyatli o'zgartirildi!");
+      } else {
+        console.log("Faollik holatini o'zgartirishda xatolik yuz berdi.");
+      }
+    } catch (err) {
+      console.error("Faollik holatini o'zgartirishda xato:", err);
+    }
+  };
+
+  // Jadval ustunlari
   const tableColumns = [
-    { key: "id", title: "T/P" },
-    { key: "firstName", title: "Исм" },
-    { key: "lastName", title: "Фамилия" },
-    { key: "email", title: "Электрон почта" },
-    { key: "position", title: "Лавозими" },
+    { key: "order", title: "T/P" },
+    { key: "firstName", title: "исм" },
+    { key: "lastName", title: "фамилия" },
+    { key: "email", title: "элэктрон почта" },
+    { key: "role", title: "лавозим" },
     {
       key: "isActive",
-      title: "Активлиги",
+      title: "Faolligi",
       render: (row: Employee) => (
         <Button
-          // variant={row.isActive ? "danger" : "danger"}
           size="small"
-          onClick={() => toggleActive(row.id)}
+          onClick={() => {
+            toggleActive(row.id);
+            setEmployeesId(row.id.toString());
+          }}
         >
-          {/* {row.isActive ? "Faol" : "Nofaol"} */}
+          {row.isActive ? "Faol" : "Nofaol"}
         </Button>
       ),
     },
@@ -165,43 +185,38 @@ const Employees: React.FC = () => {
 
   return (
     <div className="p-4 bg-white shadow rounded">
-      <h2 className="text-lg font-bold mb-4">Ходимлар</h2>
+      <h2 className="text-lg font-bold mb-4">Xodimlar</h2>
 
-      {/* Modal ochish tugmasi */}
       <Button
         variant="primary"
         className="my-3"
         onClick={() => {
           setIsModalOpen(true);
           setFormData({
-            fullName: "",
-            lastName: "",
+            firstname: "",
+            lastname: "",
             email: "",
-            phone: "",
-            position: "",
+            phoneNumber: "",
             role: "",
             password: "",
             confirmPassword: "",
           });
         }}
       >
-        Қўшиш
+        кўшиш
       </Button>
 
-      {/* Hodimlar jadvali */}
       <Table data={employees} columns={tableColumns} />
 
-      {/* Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title="Янги Ходим"
+        title="Yangi Xodim"
       >
         <form onSubmit={handleSubmit}>
-          {/* Toifa tanlash */}
           <div className="mb-4">
             <label className="block text-gray-700">
-              Админ тоифасини танланг
+              Admin toifasini tanlang
             </label>
             <select
               name="role"
@@ -209,76 +224,66 @@ const Employees: React.FC = () => {
               onChange={handleChange}
               value={formData.role}
             >
-              <option value="">Тоифани танланг</option>
-              <option value="superadmin">Тестер Админ</option>
-              <option value="admin">Текширувчи Админ</option>
+              <option value="" disabled>
+                Toifani tanlang
+              </option>
+              <option value="ROLE_TESTER">Tester Admin</option>
+              <option value="ROLE_ADMIN">Tekshiruvchi Admin</option>
             </select>
           </div>
 
-          {/* Ism */}
           <Input
-            label="Исм"
+            label="Ism"
             type="text"
-            name="fullName"
-            value={formData.fullName}
+            name="firstname"
+            value={formData.firstname}
             onChange={handleChange}
-            placeholder="Исмни киритинг"
+            placeholder="Ismni kiriting"
           />
-
-          {/* Familiya */}
           <Input
-            label="Фамилия"
+            label="Familiya"
             type="text"
-            name="lastName"
-            value={formData.lastName}
+            name="lastname"
+            value={formData.lastname}
             onChange={handleChange}
-            placeholder="Фамилия киритинг"
+            placeholder="Familiyani kiriting"
           />
-
-          {/* Telefon raqam */}
           <Input
-            label="Телефон рақам"
+            label="Telefon raqam"
             type="tel"
-            name="phone"
-            value={formData.phone}
+            name="phoneNumber"
+            value={formData.phoneNumber}
             onChange={handleChange}
-            placeholder="Телефон рақамни киритинг"
+            placeholder="Telefon raqamni kiriting"
           />
-
-          {/* Elektron pochta */}
           <Input
-            label="Электрон почта"
+            label="Elektron pochta"
             type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
-            placeholder="Электрон почтани киритинг"
+            placeholder="Elektron pochtani kiriting"
           />
-
-          {/* Parol */}
           <Input
-            label="Парол"
+            label="Parol"
             type="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
-            placeholder="Паролни киритинг"
+            placeholder="Parolni kiriting"
           />
-
-          {/* Parolni takrorlash */}
           <Input
-            label="Паролни такрорланг"
+            label="Parolni takrorlang"
             type="password"
             name="confirmPassword"
-            value={formData.confirmPassword}
             onChange={handleChange}
-            placeholder="Такрорий паролни киритинг"
+            value={formData.confirmPassword}
+            placeholder="Takroriy parolni kiriting"
           />
 
-          {/* Saqlash tugmasi */}
           <div className="mt-4 flex justify-end">
             <Button type="submit" variant="primary">
-              Сақлаш
+              Saqlash
             </Button>
           </div>
         </form>

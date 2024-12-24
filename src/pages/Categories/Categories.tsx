@@ -372,3 +372,5 @@ const Categories: React.FC = () => {
 };
 
 export default Categories;
+=======
+>>>>>>> 2abeb8d1bed8261adbdb04877d2bff963930e8cc

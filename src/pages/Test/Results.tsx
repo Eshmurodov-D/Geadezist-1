@@ -27,7 +27,7 @@ function Results() {
   useEffect(() => {
     getResults();
   }, []);
-  
+
   return (
     <div className="w-full flex items-center justify-center flex-wrap gap-5">
       {data?.map((item: any) => (
@@ -35,7 +35,7 @@ function Results() {
           <CardHeader>
             <img
               className="w-full h-72 bg-cover bg-center object-cover"
-              src={item.fileId	
+              src={item.fileId
 					? `${BASE_URL}/api/videos/files/${item.fileId}`
 					: 'https://www.shutterstock.com/image-vector/vector-line-icon-img-260nw-2050481219.jpg'}
               alt=""

@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Box, Typography, TextField, Grid } from "@mui/material";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 
@@ -11,6 +10,7 @@ function Login() {
   const [error, setError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [resData, setResData] = useState(null); // API response
 
   const handleRegisterNavigation = () => {
     navigate("/register");
@@ -20,207 +20,84 @@ function Login() {
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
     if (!emailRegex.test(email)) {
-      setEmailError("Iltimos, to'g'ri email manzilini kiriting.");
+      setEmailError("Please enter a valid email.");
       return;
     } else {
       setEmailError("");
     }
 
     if (password.length < 6 || password.length > 16) {
-      setError("Parol 6 tadan kam va 16 tadan ko'p bo'lmasin.");
+      setError("Password must be between 6 and 16 characters.");
       return;
     } else {
       setError("");
     }
+
     setIsLoading(true);
     try {
       const response = await axios.post(
-        "http://142.93.106.195:9090/auth/login",
-        {
-          email,
-          password,
-        }
+          "http://142.93.106.195:9090/auth/login",
+          { email, password }
       );
 
       if (response.data && response.data.token && response.data.role) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("role", response.data.role);
-        toast.success("Siz muvaffaqiyatli tizimga kirdingiz!", {
+        toast.success("Successfully logged in!", {
           position: "top-center",
           autoClose: 2000,
         });
-
-        switch (response.data.role) {
-          case "ROLE_ADMIN":
-            window.location.pathname = "/admin-dashboard";
-            break;
-          case "ROLE_SUPER_ADMIN":
-            window.location.pathname = "/dashboard";
-            break;
-          case "ROLE_TESTER":
-            window.location.pathname = "/tester-dashboard";
-            break;
-          case "ROLE_USER":
-            window.location.pathname = "/user-dashboard";
-            break;
-          case "ROLE_CLIENT":
-            window.location.pathname = "/test";
-            break;
-          default:
-            window.location.pathname = "/dashboard";
-        }
+        setResData(response.data);
+        navigate(`/Header`); // Redirect to a dashboard or relevant page
       } else {
-        setError("Email yoki parol noto'g'ri.");
+        setError("Incorrect email or password.");
       }
     } catch (error) {
       console.error(error);
-      setError("Tizimda xatolik yuz berdi, iltimos qayta urinib ko'ring.");
+      setError("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
+  useEffect(() => {
+    const role = localStorage.getItem("role");
+    if (role) {
+      // Handle role-based navigation
+      if (role === "ROLE_SUPER_ADMIN") navigate("/result");
+      else if (role === "ROLE_TESTER") navigate("/tester-dashboard");
+      else if (role === "ROLE_ADMIN") navigate("/admin-dashboard");
+      else navigate("/result");
+    }
+  }, []);
+
   const isLoginButtonDisabled =
-    !(email && password) || !!error || !!emailError || isLoading;
+      !(email && password) || !!error || !!emailError || isLoading;
 
   return (
-    <Grid
-      container
-      alignItems="center"
-      justifyContent="center"
-      minHeight="100vh"
-      sx={{
-        bgcolor: "#fff",
-        padding: 0,
-        margin: 0,
-      }}
-    >
-      <Grid
-        item
-        xs={12}
-        md={6}
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        sx={{
-          bgcolor: "#fff",
-          height: "100vh",
-          padding: 0,
-        }}
-      ></Grid>
-
-      <Grid
-        item
-        xs={12}
-        md={6}
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        sx={{
-          bgcolor: "white",
-          height: "100vh",
-          padding: 4,
-        }}
-      >
-        <Box
-          sx={{
-            maxWidth: 550,
-            width: "100%",
-            padding: 6,
-            borderRadius: 2,
-          }}
-        >
-          <Typography
-            variant="h5"
-            fontSize="36px"
-            align="center"
-            fontWeight="bold"
-            gutterBottom
-          >
-            Тизимга кириш
-          </Typography>
-
-          <TextField
-            label="Електрон почта"
-            variant="outlined"
-            fullWidth
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            error={!!emailError}
-            helperText={emailError}
-            margin="normal"
-            sx={{ fontSize: "16px" }}
+      <div className="login-container">
+        <div className="login-form">
+          <h2>Login</h2>
+          <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
           />
-
-          <TextField
-            label="Парол"
-            variant="outlined"
-            fullWidth
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            error={!!error}
-            helperText={error}
-            margin="normal"
-            sx={{ fontSize: "16px" }}
+          {emailError && <p className="error-text">{emailError}</p>}
+          <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
           />
-
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            onClick={handleSubmit}
-            fullWidth
-            disabled={isLoginButtonDisabled}
-            sx={{
-              marginTop: 3,
-              fontSize: "16px",
-              backgroundColor: "#5213e7",
-              "&:hover": {
-                backgroundColor: "#3701b1",
-              },
-            }}
-          >
-            {isLoading ? "Kirish..." : "Тизимга кириш"}
-          </Button>
-
-          <Box display="flex" justifyContent="space-between" mt={3}>
-            <Button
-              variant="text"
-              color="primary"
-              onClick={handleRegisterNavigation}
-              sx={{
-                fontSize: "12px",
-                color: "#5213e7",
-                textTransform: "none",
-                "&:hover": {
-                  color: "#3701b1",
-                },
-              }}
-            >
-              Рўйхатдан ўтиш
-            </Button>
-            <Button
-              variant="text"
-              color="secondary"
-              onClick={() => navigate("/changepass")}
-              sx={{
-                fontSize: "12px",
-                color: "#5213e7",
-                textTransform: "none",
-                "&:hover": {
-                  color: "#3701b1",
-                },
-              }}
-            >
-              Паролни унутдингизми?
-            </Button>
-          </Box>
-        </Box>
-      </Grid>
-
-      <ToastContainer />
-    </Grid>
+          {error && <p className="error-text">{error}</p>}
+          <button onClick={handleSubmit} disabled={isLoginButtonDisabled}>
+            {isLoading ? "Logging in..." : "Login"}
+          </button>
+          <ToastContainer />
+        </div>
+      </div>
   );
 }
 
