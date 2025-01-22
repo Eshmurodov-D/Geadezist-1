@@ -257,6 +257,7 @@ const Categories: React.FC = () => {
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 <th className="px-6 py-3">ID</th>
+                <th className="px-6 py-3">T/P</th>
                 <th className="px-6 py-3">Категория номи</th>
                 <th className="px-6 py-3">Тавсиф</th>
                 <th className="px-6 py-3">Саволлар сони</th>

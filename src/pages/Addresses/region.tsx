@@ -162,14 +162,14 @@
 
     return (
       <div className="max-w-4xl mx-auto p-8">
-        <h1 className="text-2xl font-semibold mb-6">Yangi Region Qo'shish</h1>
+        <h1 className="text-2xl font-semibold mb-6">Add New Region</h1>
 
         {/* Region qo'shish tugmasi */}
         <Button
           onClick={() => setIsModalOpen(true)} // Open the modal
           className="bg-gray-600 flex justify-center font-semibold text-white py-2 px-4 rounded-md hover:bg-gray-700"
         >
-          Region qo'shish
+         add Region
         </Button>
 
         {/* Regionlar jadvali */}
@@ -193,7 +193,7 @@
                 htmlFor="regionName"
                 className="block text-sm font-medium text-gray-700"
               >
-                Region nomi
+                Region Name
               </label>
               <input
                 type="text"
